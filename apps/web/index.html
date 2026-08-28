@@ -324,7 +324,7 @@ const fd=new FormData(e.target);
 $('loginBtn').disabled=true;
 $('loginError').className='login-error';
 try{
-await api('/api/auth/login',{method:'POST',body:JSON.stringify({email:fd.get('email'),password:fd.get('password'})});
+await api('/api/auth/login',{method:'POST',body:JSON.stringify({email:fd.get('email'),password:fd.get('password')})});
 currentUser=await api('/api/me');
 showApp();
 }catch(err){
@@ -338,7 +338,7 @@ $('registerForm').onsubmit=async e=>{
 e.preventDefault();
 const fd=new FormData(e.target);
 try{
-await api('/api/auth/register',{method:'POST',body:JSON.stringify({username:fd.get('username'),email:fd.get('email'),password:fd.get('password'})});
+await api('/api/auth/register',{method:'POST',body:JSON.stringify({username:fd.get('username'),email:fd.get('email'),password:fd.get('password')})});
 currentUser=await api('/api/me');
 showApp();
 }catch(err){
@@ -728,7 +728,7 @@ const forms={
 node:{title:'Add Node',desc:'Enrollment token shown after creation.',fields:'<div class="form-group"><label>Node Name</label><input name="name" placeholder="node-01" required></div><div class="form-group"><label>Address</label><input name="address" placeholder="10.0.0.1" required></div>',path:'/api/nodes'},
 ip:{title:'Add IPv4',desc:'Add an address routed to a node.',fields:'<div class="form-group"><label>Address</label><input name="address" required></div><div class="form-group"><label>Node ID</label><input name="nodeId" required></div>',path:'/api/ipv4'},
 image:{title:'Add OS Image',desc:'LXD image alias for provisioning.',fields:'<div class="form-group"><label>Name</label><input name="name" placeholder="Ubuntu 24.04" required></div><div class="form-group"><label>Distribution</label><input name="distribution" value="ubuntu" required></div><div class="form-group"><label>Release</label><input name="release" value="24.04" required></div><div class="form-group"><label>Architecture</label><select name="architecture"><option>amd64</option><option>arm64</option></select></div><div class="form-group"><label>Image Alias</label><input name="imageAlias" value="ubuntu:24.04" required></div>',path:'/api/os-images'},
-plan:{title:'Create Plan',desc:'Define resource limits.',fields:'<div class="form-group"><label>Name</label><input name="name" required></div><div class="form-group"><label>vCPU</label><input name="cpu" type="number" min="1" value="1"></div><div class="form-group"><label>RAM (MB)</label><input name="ramMiB" type="number" min="512" value="2048"></div><div class="form-group"><label>Disk (GB)</label><input name="diskGiB" type="number" min="5" value="25"></div><div class="form-group"><label>VPS Limit</label><input name="vpsLimit" type="number" min="1" value="1"></div><div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:8px">${['ipv4','rdp','sshx','backups','tailscale'].map(x=>`<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" name="${x}"> ${x}</label>`).join('')}</div>',path:'/api/plans'},
+plan:{title:'Create Plan',desc:'Define resource limits.',fields:'<div class="form-group"><label>Name</label><input name="name" required></div><div class="form-group"><label>vCPU</label><input name="cpu" type="number" min="1" value="1"></div><div class="form-group"><label>RAM (MB)</label><input name="ramMiB" type="number" min="512" value="2048"></div><div class="form-group"><label>Disk (GB)</label><input name="diskGiB" type="number" min="5" value="25"></div><div class="form-group"><label>VPS Limit</label><input name="vpsLimit" type="number" min="1" value="1"></div><div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:8px">'+['ipv4','rdp','sshx','backups','tailscale'].map(x=>'<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" name="'+x+'"> '+x+'</label>').join('')+'</div>',path:'/api/plans'},
 user:{title:'Create User',desc:'Passwords use Argon2id.',fields:'<div class="form-group"><label>Email</label><input name="email" type="email" required></div><div class="form-group"><label>Username</label><input name="username" required></div><div class="form-group"><label>Password</label><input name="password" type="password" minlength="12" required></div><div class="form-group"><label>Role</label><select name="role"><option value="USER">User</option><option value="SUPPORT">Support</option><option value="ADMIN">Admin</option></select></div>',path:'/api/users'},
 };
 
