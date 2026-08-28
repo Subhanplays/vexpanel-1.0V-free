@@ -1,0 +1,70 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: vexpanel
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set-in-.env}
+      POSTGRES_DB: vexpanel
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U vexpanel -d vexpanel]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  api:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://vexpanel:${POSTGRES_PASSWORD}@postgres:5432/vexpanel
+      REDIS_URL: redis://redis:6379
+      PORT: 3000
+    ports: ["3000:3000"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  worker:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://vexpanel:${POSTGRES_PASSWORD}@postgres:5432/vexpanel
+      REDIS_URL: redis://redis:6379
+    command: ["node", "dist/api/src/worker.js"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  discord:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://vexpanel:${POSTGRES_PASSWORD}@postgres:5432/vexpanel
+    command: ["node", "dist/api/src/discord.js"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    profiles: ["discord"]
+
+volumes:
+  postgres-data:
+  redis-data:
