@@ -54,8 +54,23 @@ print_banner() {
     echo -e "${NC}"
 }
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$SCRIPT_DIR"
+REPO_URL="https://github.com/Subhanplays/vexpanel-1.0V-free.git"
+REPO_DIR="vexpanel-1.0V-free"
+
+# ══════════════════════════════════════════════════════════════════════════
+# DETECT IF RUNNING REMOTELY OR LOCALLY
+# ══════════════════════════════════════════════════════════════════════════
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd || echo "")"
+
+if [ -f "${SCRIPT_DIR}/../docker-compose.yml" ]; then
+    # Running from within the repo (local install)
+    INSTALL_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+    RUNNING_LOCAL=true
+else
+    # Running remotely via curl (need to clone)
+    RUNNING_LOCAL=false
+    INSTALL_DIR="$(pwd)/${REPO_DIR}"
+fi
 
 print_banner
 
@@ -78,8 +93,35 @@ if ! docker compose version >/dev/null 2>&1; then
 fi
 log "Docker Compose found: $(docker compose version 2>/dev/null | head -1)"
 
+if ! command -v git >/dev/null 2>&1; then
+    err "Git is required but not installed.\n     Install: sudo apt install git"
+fi
+log "Git found: $(git --version)"
+
 if ! command -v openssl >/dev/null 2>&1; then
     warn "OpenSSL not found, will use /dev/urandom for secrets"
+fi
+
+# ══════════════════════════════════════════════════════════════════════════
+# CLONE REPO (if running remotely)
+# ══════════════════════════════════════════════════════════════════════════
+if [ "$RUNNING_LOCAL" = false ]; then
+    header "DOWNLOADING VEXPANEL"
+
+    if [ -d "$INSTALL_DIR" ]; then
+        warn "Directory $REPO_DIR already exists, pulling latest..."
+        cd "$INSTALL_DIR"
+        git pull origin main 2>/dev/null || true
+    else
+        log "Cloning VexPanel repository..."
+        git clone "$REPO_URL" "$REPO_DIR"
+        cd "$INSTALL_DIR"
+    fi
+    log "VexPanel downloaded to: $INSTALL_DIR"
+else
+    header "USING LOCAL VEXPANEL"
+    cd "$INSTALL_DIR"
+    log "Using local installation at: $INSTALL_DIR"
 fi
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -185,7 +227,6 @@ const { PrismaClient } = require('@prisma/client');
 async function main() {
   const db = new PrismaClient();
 
-  // Default OS images
   const images = [
     { name: 'Ubuntu 22.04', distribution: 'ubuntu', release: '22.04', architecture: 'amd64', imageAlias: 'ubuntu:22.04', enabled: true },
     { name: 'Ubuntu 24.04', distribution: 'ubuntu', release: '24.04', architecture: 'amd64', imageAlias: 'ubuntu:24.04', enabled: true },
@@ -195,7 +236,6 @@ async function main() {
     await db.osImage.upsert({ where: { name: img.name }, create: img, update: {} });
   }
 
-  // Default plans
   const plans = [
     { name: 'Starter', cpu: 1, ramMiB: 2048, diskGiB: 25, vpsLimit: 1, ipv4: true, rdp: true, sshx: true, backups: false, snapshots: false, tailscale: false, ipv6: false },
     { name: 'Basic', cpu: 2, ramMiB: 4096, diskGiB: 50, vpsLimit: 2, ipv4: true, rdp: true, sshx: true, backups: true, snapshots: true, tailscale: true, ipv6: true },
