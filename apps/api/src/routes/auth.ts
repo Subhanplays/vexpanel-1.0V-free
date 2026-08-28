@@ -6,7 +6,22 @@ import { db } from "../lib/db.js";
 import { requireSession, setSession, signSession } from "../auth.js";
 import { audit } from "../server.js";
 
+const BOOTSTRAP_KEY = "system.initial_setup_completed";
+
+async function getBootstrapState() {
+  const [bootstrap, adminCount] = await Promise.all([
+    db.setting.findUnique({ where: { key: BOOTSTRAP_KEY } }),
+    db.user.count({ where: { role: { in: ["ADMIN", "SUPER_ADMIN"] } } }),
+  ]);
+
+  return {
+    needsBootstrap: !bootstrap && adminCount === 0,
+  };
+}
+
 export default async function authRoutes(app: FastifyInstance) {
+  app.get("/api/auth/bootstrap", async () => getBootstrapState());
+
   app.post("/api/auth/register", async (request, reply) => {
     const input = z.object({
       email: z.string().email(),
@@ -14,21 +29,39 @@ export default async function authRoutes(app: FastifyInstance) {
       password: z.string().min(12).max(256),
     }).parse(request.body);
 
-    const existing = await db.user.findFirst({
-      where: { OR: [{ email: input.email }, { username: input.username }] },
-    });
-    if (existing) return reply.status(409).send({ error: "Email or username already taken" });
+    const bootstrap = await getBootstrapState();
+    if (!bootstrap.needsBootstrap) {
+      return reply.status(403).send({ error: "Initial admin setup is already complete" });
+    }
 
-    const user = await db.user.create({
-      data: {
-        email: input.email,
-        username: input.username,
-        passwordHash: await argon2.hash(input.password, { type: argon2.argon2id }),
-      },
+    const user = await db.$transaction(async tx => {
+      const existing = await tx.user.findFirst({
+        where: { OR: [{ email: input.email }, { username: input.username }] },
+      });
+      if (existing) throw Object.assign(new Error("Email or username already taken"), { statusCode: 409 });
+
+      const created = await tx.user.create({
+        data: {
+          email: input.email,
+          username: input.username,
+          passwordHash: await argon2.hash(input.password, { type: argon2.argon2id }),
+          role: "SUPER_ADMIN",
+        },
+      });
+
+      await tx.setting.create({
+        data: {
+          key: BOOTSTRAP_KEY,
+          value: { completed: true, createdAt: new Date().toISOString(), createdBy: created.id },
+          updatedById: created.id,
+        },
+      });
+
+      return created;
     });
 
     setSession(reply, await signSession({ sub: user.id, role: user.role }));
-    await audit(user.id, "auth.register", user.id, "success", request.ip);
+    await audit(user.id, "auth.bootstrap", user.id, "success", request.ip);
     return reply.status(201).send({ user: { id: user.id, email: user.email, username: user.username, role: user.role } });
   });
 

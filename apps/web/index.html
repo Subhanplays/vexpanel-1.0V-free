@@ -213,7 +213,7 @@ Continue with Discord
 </button>
 </form>
 <div class="login-footer">
-Don't have an account? <a href="#" onclick="showRegister();return false">Create one</a>
+<span id="loginFooterText">Don't have an account?</span> <a href="#" id="loginFooterLink" onclick="showRegister();return false">Create one</a>
 </div>
 </div>
 </div>
@@ -225,7 +225,7 @@ Don't have an account? <a href="#" onclick="showRegister();return false">Create 
 <div class="login-card">
 <div class="login-logo">
 <h1>VexPanel</h1>
-<p>Create your account</p>
+<p id="registerSubtitle">Create your account</p>
 </div>
 <div id="registerError" class="login-error"></div>
 <form class="login-form" id="registerForm">
@@ -241,10 +241,10 @@ Don't have an account? <a href="#" onclick="showRegister();return false">Create 
 <label>Password</label>
 <input type="password" name="password" placeholder="Min 12 characters" required minlength="12">
 </div>
-<button type="submit" class="login-btn">Create Account</button>
+<button type="submit" class="login-btn" id="registerBtn">Create Account</button>
 </form>
-<div class="login-footer">
-Already have an account? <a href="#" onclick="showLogin();return false">Sign in</a>
+<div class="login-footer" id="registerFooter">
+<span id="registerFooterText">Already have an account?</span> <a href="#" id="registerFooterLink" onclick="showLogin();return false">Sign in</a>
 </div>
 </div>
 </div>
@@ -280,7 +280,7 @@ Already have an account? <a href="#" onclick="showLogin();return false">Sign in<
 
 <script>
 const API=session=>fetch(session?{credentials:'include'}:{});
-let currentUser=null, currentView='dashboard';
+let currentUser=null, currentView='dashboard', bootstrapMode=false;
 
 // Auth
 function csrf(){return document.cookie.split('; ').find(v=>v.startsWith('csrf='))?.slice(5)}
@@ -290,7 +290,13 @@ function toast(msg,type='success'){const t=$('toast');t.textContent=msg;t.classN
 function $(id){return document.getElementById(id)}
 
 async function checkAuth(){
+const bootstrap=await api('/api/auth/bootstrap').catch(()=>({needsBootstrap:false}));
+bootstrapMode=!!bootstrap.needsBootstrap;
 try{
+if(bootstrapMode){
+showRegister();
+return;
+}
 currentUser=await api('/api/me');
 showApp();
 }catch{
@@ -299,15 +305,25 @@ showLogin();
 }
 
 function showLogin(){
+if(bootstrapMode){showRegister();return;}
 $('loginPage').style.display='';
 $('registerPage').style.display='none';
 $('appLayout').style.display='none';
+$('loginFooterText').textContent='Registration is disabled on this server.';
+$('loginFooterLink').style.display='none';
 }
 
 function showRegister(){
+if(!bootstrapMode){showLogin();return;}
 $('loginPage').style.display='none';
 $('registerPage').style.display='';
 $('appLayout').style.display='none';
+$('registerSubtitle').textContent='Create the first administrator account';
+$('registerBtn').textContent='Create Admin';
+$('registerFooterText').textContent='This is only shown the first time the panel starts.';
+$('registerFooterLink').style.display='none';
+$('loginFooterText').textContent="Don't have an account?";
+$('loginFooterLink').style.display='';
 }
 
 function showApp(){
@@ -339,6 +355,7 @@ e.preventDefault();
 const fd=new FormData(e.target);
 try{
 await api('/api/auth/register',{method:'POST',body:JSON.stringify({username:fd.get('username'),email:fd.get('email'),password:fd.get('password')})});
+bootstrapMode=false;
 currentUser=await api('/api/me');
 showApp();
 }catch(err){

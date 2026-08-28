@@ -194,30 +194,6 @@ docker compose exec -T api npx prisma migrate deploy 2>/dev/null || true
 log "Database schema updated"
 
 # ══════════════════════════════════════════════════════════════════════════
-# ADMIN USER
-# ══════════════════════════════════════════════════════════════════════════
-header "ADMIN ACCOUNT"
-
-log "Creating initial admin user..."
-docker compose exec -T api node -e "
-const { PrismaClient } = require('@prisma/client');
-const argon2 = require('argon2');
-async function main() {
-  const db = new PrismaClient();
-  const existing = await db.user.findUnique({ where: { email: 'admin@vexpanel.local' } });
-  if (!existing) {
-    const hash = await argon2.hash('admin-password-change-me', { type: argon2.argon2id });
-    await db.user.create({ data: { email: 'admin@vexpanel.local', username: 'admin', passwordHash: hash, role: 'SUPER_ADMIN' } });
-    console.log('Admin user created successfully');
-  } else {
-    console.log('Admin user already exists');
-  }
-  await db.\$disconnect();
-}
-main().catch(e => { console.error(e.message); process.exit(1); });
-" 2>/dev/null || warn "Could not create admin user automatically"
-
-# ══════════════════════════════════════════════════════════════════════════
 # SEED DATA
 # ══════════════════════════════════════════════════════════════════════════
 header "SEEDING DEFAULT DATA"
@@ -267,11 +243,8 @@ echo -e "${NC}"
 echo -e "  ${WHITE}${BOLD}Access VexPanel:${NC}"
 echo -e "  ${CYAN}http://localhost:${PORT:-3000}${NC}"
 echo ""
-echo -e "  ${WHITE}${BOLD}Default Admin:${NC}"
-echo -e "  ${CYAN}Email:    admin@vexpanel.local${NC}"
-echo -e "  ${CYAN}Password: admin-password-change-me${NC}"
-echo ""
-echo -e "  ${YELLOW}${BOLD}⚠  CHANGE THE DEFAULT PASSWORD IMMEDIATELY!${NC}"
+echo -e "  ${WHITE}${BOLD}First-time setup:${NC}"
+echo -e "  ${CYAN}Open the panel in your browser and create the initial admin account.${NC}"
 echo ""
 echo -e "  ${WHITE}${BOLD}Useful Commands:${NC}"
 echo -e "  ${GREEN}View logs:    ${CYAN}docker compose logs -f${NC}"

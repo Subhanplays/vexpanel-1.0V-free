@@ -142,17 +142,14 @@ The installer will:
 - Generate random secrets
 - Build and start all services
 - Run database migrations
-- Create an admin user
+- Open the panel for first-time admin setup
 
-### Default Credentials
+### First-Time Setup
 
 | Field | Value |
 |-------|-------|
 | URL | `http://localhost:3000` |
-| Email | `admin@vexpanel.local` |
-| Password | `admin-password-change-me` |
-
-> ⚠️ **CHANGE THE DEFAULT PASSWORD IMMEDIATELY!**
+| Action | Create the first admin account in the browser |
 
 ---
 
@@ -249,7 +246,7 @@ vexpanel/
 
 | Category | Endpoints |
 |----------|-----------|
-| **Auth** | `POST /api/auth/login`, `POST /api/auth/register`, `POST /api/auth/logout`, `GET /api/me`, `PUT /api/me`, `PUT /api/me/password` |
+| **Auth** | `GET /api/auth/bootstrap`, `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/me`, `PUT /api/me`, `PUT /api/me/password` |
 | **VPS** | `GET /api/vps`, `GET /api/vps/:id`, `POST /api/vps`, `PUT /api/vps/:id`, `POST /api/vps/:id/actions`, `POST /api/vps/:id/ip`, `GET /api/vps/:id/metrics` |
 | **Nodes** | `GET /api/nodes`, `POST /api/nodes`, `PUT /api/nodes/:id`, `DELETE /api/nodes/:id` |
 | **IPv4** | `GET /api/ipv4`, `POST /api/ipv4`, `POST /api/ipv4/bulk`, `POST /api/ipv4/:id/reservation` |
