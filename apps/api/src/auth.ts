@@ -19,6 +19,8 @@ export async function requireSession(request: FastifyRequest): Promise<Session> 
 }
 export function enforceCsrf(request: FastifyRequest) {
   if (["GET", "HEAD", "OPTIONS"].includes(request.method)) return;
+  const path = request.url.split("?")[0];
+  if (path === "/api/auth/bootstrap" || path === "/api/auth/login" || path === "/api/auth/register" || path === "/api/auth/discord") return;
   if (!request.cookies.session || request.headers["x-csrf-token"] !== request.cookies.csrf) throw Object.assign(new Error("CSRF validation failed"), { statusCode: 403 });
 }
 export function setSession(reply: FastifyReply, session: string) {
