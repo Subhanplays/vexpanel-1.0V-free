@@ -7,9 +7,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#09090b;--surface:#0f0f12;--card:#18181b;--card-hover:#1f1f23;--border:#27272a;--border-light:#3f3f46;--text:#fafafa;--text-secondary:#a1a1aa;--text-muted:#71717a;--accent:#8b5cf6;--accent-hover:#7c3aed;--accent-glow:rgba(139,92,246,0.15);--accent-glow-strong:rgba(139,92,246,0.3);--green:#22c55e;--green-bg:rgba(34,197,94,0.1);--red:#ef4444;--red-bg:rgba(239,68,68,0.1);--yellow:#eab308;--yellow-bg:rgba(234,179,8,0.1);--blue:#3b82f6;--blue-bg:rgba(59,130,246,0.1);--radius:12px;--radius-lg:16px;--radius-xl:20px;--shadow:0 1px 3px rgba(0,0,0,0.3),0 1px 2px rgba(0,0,0,0.2);--shadow-lg:0 10px 30px rgba(0,0,0,0.4);--transition:all 0.2s cubic-bezier(0.4,0,0.2,1)}
+:root{--bg:#050816;--surface:rgba(12,16,28,0.9);--card:rgba(18,24,40,0.88);--card-hover:rgba(26,34,56,0.96);--border:rgba(148,163,184,0.12);--border-light:rgba(148,163,184,0.24);--text:#f8fafc;--text-secondary:#cbd5e1;--text-muted:#94a3b8;--accent:#60a5fa;--accent-hover:#3b82f6;--accent-glow:rgba(96,165,250,0.18);--accent-glow-strong:rgba(96,165,250,0.32);--green:#34d399;--green-bg:rgba(52,211,153,0.12);--red:#fb7185;--red-bg:rgba(251,113,133,0.12);--yellow:#fbbf24;--yellow-bg:rgba(251,191,36,0.12);--blue:#38bdf8;--blue-bg:rgba(56,189,248,0.12);--radius:14px;--radius-lg:20px;--radius-xl:28px;--shadow:0 1px 2px rgba(2,6,23,0.35),0 8px 24px rgba(2,6,23,0.18);--shadow-lg:0 24px 80px rgba(2,6,23,0.45);--transition:all 0.22s cubic-bezier(0.22,1,0.36,1)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{background:
+radial-gradient(circle at top left, rgba(56,189,248,0.18), transparent 34%),
+radial-gradient(circle at top right, rgba(96,165,250,0.16), transparent 28%),
+radial-gradient(circle at bottom left, rgba(167,139,250,0.14), transparent 30%),
+linear-gradient(180deg,#050816 0%,#070d1a 38%,#050816 100%);
+color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative}
+body::before{content:'';position:fixed;inset:-20vmax auto auto -20vmax;width:40vmax;height:40vmax;background:radial-gradient(circle,rgba(96,165,250,0.14),transparent 70%);filter:blur(28px);pointer-events:none;z-index:-1}
+body::after{content:'';position:fixed;inset:auto -18vmax -22vmax auto;width:42vmax;height:42vmax;background:radial-gradient(circle,rgba(34,211,238,0.08),transparent 72%);filter:blur(28px);pointer-events:none;z-index:-1}
 ::selection{background:var(--accent);color:#fff}
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -17,11 +24,11 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple
 ::-webkit-scrollbar-thumb:hover{background:var(--border-light)}
 
 /* Login Page */
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:24px}
 .login-page::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);top:-200px;right:-200px;pointer-events:none}
 .login-page::after{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);bottom:-100px;left:-100px;pointer-events:none}
 .login-container{width:100%;max-width:420px;padding:20px;position:relative;z-index:1}
-.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:40px;box-shadow:var(--shadow-lg)}
+.login-card{background:linear-gradient(180deg,rgba(15,23,42,0.92),rgba(15,23,42,0.78));border:1px solid rgba(148,163,184,0.16);border-radius:var(--radius-xl);padding:40px;box-shadow:var(--shadow-lg);backdrop-filter:blur(24px)}
 .login-logo{text-align:center;margin-bottom:32px}
 .login-logo h1{font-size:32px;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,#fff 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .login-logo p{color:var(--text-muted);font-size:13px;margin-top:8px}
@@ -47,21 +54,21 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple
 .login-error.show{display:block}
 
 /* App Layout */
-.app-layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:20px 12px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.app-layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh;gap:0}
+.sidebar{background:linear-gradient(180deg,rgba(12,18,34,0.98),rgba(9,14,26,0.92));border-right:1px solid rgba(148,163,184,0.12);padding:20px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;backdrop-filter:blur(24px);box-shadow:inset -1px 0 0 rgba(255,255,255,0.02)}
 .sidebar-logo{display:flex;align-items:center;gap:12px;padding:8px 12px;margin-bottom:24px}
-.sidebar-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),#6d28d9);border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:16px;color:#fff}
+.sidebar-logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#38bdf8,#3b82f6 55%,#8b5cf6);border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:16px;color:#fff;box-shadow:0 10px 28px rgba(59,130,246,0.28)}
 .sidebar-logo-text{font-size:18px;font-weight:700;letter-spacing:-0.5px}
 .sidebar-logo-text span{color:var(--accent)}
 .sidebar-nav{flex:1;display:flex;flex-direction:column;gap:2px}
 .sidebar-section{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;padding:16px 12px 8px;margin-top:8px}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text-secondary);text-decoration:none;font-size:13px;font-weight:500;cursor:pointer;transition:var(--transition)}
-.sidebar-item:hover{background:var(--card);color:var(--text)}
-.sidebar-item.active{background:var(--accent-glow);color:var(--accent)}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;color:var(--text-secondary);text-decoration:none;font-size:13px;font-weight:600;cursor:pointer;transition:var(--transition);border:1px solid transparent}
+.sidebar-item:hover{background:rgba(255,255,255,0.03);color:var(--text);border-color:rgba(255,255,255,0.04);transform:translateX(2px)}
+.sidebar-item.active{background:linear-gradient(135deg,rgba(96,165,250,0.16),rgba(56,189,248,0.08));color:#fff;border-color:rgba(96,165,250,0.18);box-shadow:0 12px 30px rgba(2,6,23,0.22)}
 .sidebar-item .icon{width:18px;text-align:center;font-size:14px}
 .sidebar-item .badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;padding:2px 6px;border-radius:10px;font-weight:600}
-.sidebar-user{border-top:1px solid var(--border);padding:16px 12px;display:flex;align-items:center;gap:10px;margin-top:auto}
-.sidebar-avatar{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#6d28d9);display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff}
+.sidebar-user{border-top:1px solid rgba(148,163,184,0.12);padding:16px 12px;display:flex;align-items:center;gap:10px;margin-top:auto;flex-wrap:wrap}
+.sidebar-avatar{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;box-shadow:0 10px 24px rgba(59,130,246,0.2)}
 .sidebar-user-info{flex:1;min-width:0}
 .sidebar-user-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sidebar-user-role{font-size:11px;color:var(--text-muted)}
@@ -69,10 +76,35 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple
 .sidebar-logout:hover{background:var(--red-bg);color:var(--red)}
 
 /* Main Content */
-.main-content{padding:28px 32px;max-width:1400px}
+.main-content{padding:28px 32px 40px;max-width:none;min-height:100vh}
 .page-header{margin-bottom:28px}
 .page-header h1{font-size:24px;font-weight:700;letter-spacing:-0.5px}
 .page-header p{color:var(--text-muted);font-size:13px;margin-top:4px}
+
+.hero-panel{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:26px 28px;border:1px solid rgba(148,163,184,0.14);border-radius:28px;background:linear-gradient(135deg,rgba(15,23,42,0.92),rgba(15,23,42,0.68));box-shadow:var(--shadow-lg);backdrop-filter:blur(24px);margin-bottom:22px}
+.hero-copy{max-width:760px}
+.hero-kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.18);color:#dbeafe;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+.hero-title{font-size:30px;line-height:1.06;letter-spacing:-1.2px;font-weight:800;margin-bottom:10px}
+.hero-title span{background:linear-gradient(135deg,#fff 0%,#93c5fd 45%,#60a5fa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-subtitle{color:var(--text-secondary);font-size:14px;line-height:1.7;max-width:64ch}
+.hero-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.hero-chip{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);color:var(--text-secondary);font-size:12px;font-weight:600}
+.hero-chip strong{color:#fff}
+.hero-panel .btn{border-radius:999px;padding:10px 16px}
+.hero-panel .btn-primary{box-shadow:0 12px 28px rgba(59,130,246,0.24)}
+.hero-panel .btn-secondary{background:rgba(255,255,255,0.03)}
+.admin-switch{background:linear-gradient(135deg,rgba(251,191,36,0.18),rgba(251,113,133,0.14));border:1px solid rgba(251,191,36,0.16);color:#fff}
+.admin-switch:hover{background:linear-gradient(135deg,rgba(251,191,36,0.24),rgba(251,113,133,0.16))}
+.split-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(320px,0.8fr);gap:16px;align-items:start}
+.panel-card{background:linear-gradient(180deg,rgba(15,23,42,0.9),rgba(15,23,42,0.72));border:1px solid rgba(148,163,184,0.12);border-radius:24px;box-shadow:var(--shadow);backdrop-filter:blur(18px)}
+.panel-card .card-header{background:transparent}
+.insight-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.insight-card{padding:18px;border-radius:20px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)}
+.insight-card .label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:10px}
+.insight-card .value{font-size:28px;line-height:1;font-weight:800;letter-spacing:-1px}
+.insight-card .meta{font-size:12px;color:var(--text-secondary);margin-top:8px}
+.quick-actions{display:flex;flex-wrap:wrap;gap:10px}
+.quick-actions .btn{padding:11px 16px}
 
 /* Stats Cards */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
@@ -280,18 +312,40 @@ Continue with Discord
 
 <script>
 const API=session=>fetch(session?{credentials:'include'}:{});
+const shellMode=location.pathname.startsWith('/admin')?'admin':'user';
 let currentUser=null, currentView='dashboard', bootstrapMode=false;
 
 // Auth
 function csrf(){return document.cookie.split('; ').find(v=>v.startsWith('csrf='))?.slice(5)}
 async function api(path,opt={}){const r=await fetch(path,{credentials:'include',headers:{'content-type':'application/json','x-csrf-token':csrf(),...(opt.headers||{})},...opt});if(!r.ok)throw Error((await r.json().catch(()=>({}))).error||'Request failed');return r.status===204?null:r.json()}
+function scoped(path,scope){return `${path}${path.includes('?')?'&':'?'}scope=${scope}`}
 function esc(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function toast(msg,type='success'){const t=$('toast');t.textContent=msg;t.className='toast show '+type;setTimeout(()=>t.classList.remove('show'),3000)}
 function $(id){return document.getElementById(id)}
+function isAdminRoute(){return shellMode==='admin'}
+function setShellMeta(){
+document.body.dataset.shell=shellMode;
+document.title=shellMode==='admin'?'VexPanel Admin':'VexPanel';
+}
+function goAdmin(){window.location.assign('/admin/')}
+function goUser(){window.location.assign('/')}
+function setLoginCopy(){
+const title=$('loginPage').querySelector('.login-logo h1');
+const subtitle=$('loginPage').querySelector('.login-logo p');
+title.textContent='VexPanel';
+subtitle.textContent=shellMode==='admin'?'Admin control room':'Premium VPS hosting control panel';
+}
+function setRegisterCopy(){
+$('registerSubtitle').textContent=bootstrapMode?'Create the first administrator account':'Create your account';
+$('registerBtn').textContent=bootstrapMode?'Create Admin':'Create Account';
+$('registerFooterText').textContent=bootstrapMode?'This only appears on the first boot.':'Already have an account?';
+$('registerFooterLink').style.display=bootstrapMode?'none':'';
+}
 
 async function checkAuth(){
 const bootstrap=await api('/api/auth/bootstrap').catch(()=>({needsBootstrap:false}));
 bootstrapMode=!!bootstrap.needsBootstrap;
+setShellMeta();
 try{
 if(bootstrapMode){
 showRegister();
@@ -309,8 +363,9 @@ if(bootstrapMode){showRegister();return;}
 $('loginPage').style.display='';
 $('registerPage').style.display='none';
 $('appLayout').style.display='none';
-$('loginFooterText').textContent='Registration is disabled on this server.';
-$('loginFooterLink').style.display='none';
+setLoginCopy();
+$('loginFooterText').textContent=shellMode==='admin'?'Admin access only.':'Don\'t have an account?';
+$('loginFooterLink').style.display=shellMode==='admin'?'none':'';
 }
 
 function showRegister(){
@@ -318,10 +373,7 @@ if(!bootstrapMode){showLogin();return;}
 $('loginPage').style.display='none';
 $('registerPage').style.display='';
 $('appLayout').style.display='none';
-$('registerSubtitle').textContent='Create the first administrator account';
-$('registerBtn').textContent='Create Admin';
-$('registerFooterText').textContent='This is only shown the first time the panel starts.';
-$('registerFooterLink').style.display='none';
+setRegisterCopy();
 $('loginFooterText').textContent="Don't have an account?";
 $('loginFooterLink').style.display='';
 }
@@ -330,8 +382,28 @@ function showApp(){
 $('loginPage').style.display='none';
 $('registerPage').style.display='none';
 $('appLayout').style.display='';
+setShellMeta();
+if(isAdminRoute()&&!isAdmin()){
+showAccessDenied();
+return;
+}
 renderSidebar();
 navigate('dashboard');
+}
+
+function showAccessDenied(){
+const c=$('mainContent');
+c.innerHTML=`
+<div class="hero-panel">
+<div class="hero-copy">
+<div class="hero-kicker">Restricted access</div>
+<div class="hero-title">Admin portal <span>requires elevated access</span></div>
+<div class="hero-subtitle">You are signed in, but this account does not have admin permissions. Use the user portal instead or ask an administrator to grant access.</div>
+<div class="hero-actions" style="margin-top:18px">
+<button class="btn btn-primary" onclick="goUser()">Go to User Portal</button>
+</div>
+</div>
+</div>`;
 }
 
 $('loginForm').onsubmit=async e=>{
@@ -357,6 +429,7 @@ try{
 await api('/api/auth/register',{method:'POST',body:JSON.stringify({username:fd.get('username'),email:fd.get('email'),password:fd.get('password')})});
 bootstrapMode=false;
 currentUser=await api('/api/me');
+setShellMeta();
 showApp();
 }catch(err){
 $('registerError').textContent=err.message;
@@ -383,12 +456,14 @@ const userNav=[
 ];
 
 function renderSidebar(){
-const nav=isAdmin()?adminNav:userNav;
+const nav=isAdminRoute()?adminNav:userNav;
 $('sidebarNav').innerHTML=nav.map(s=>`<div class="sidebar-section">${s.section}</div>`+s.items.map(i=>`<div class="sidebar-item${currentView===i.id?' active':''}" onclick="navigate('${i.id}')"><span class="icon">${i.icon}</span>${i.label}${i.badge?`<span class="badge" id="badge-${i.badge}"></span>`:''}</div>`)).join('');
 $('sidebarUser').innerHTML=`
 <div class="sidebar-avatar">${currentUser.username.slice(0,2).toUpperCase()}</div>
 <div class="sidebar-user-info"><div class="sidebar-user-name">${esc(currentUser.username)}</div><div class="sidebar-user-role">${currentUser.role}</div></div>
 <div class="sidebar-logout" onclick="logout()" title="Logout">⏻</div>
+${!isAdminRoute()&&isAdmin()?`<button class="btn btn-secondary btn-sm admin-switch" style="width:100%" onclick="goAdmin()">Access Admin</button>`:''}
+${isAdminRoute()&&isAdmin()?`<button class="btn btn-secondary btn-sm" style="width:100%" onclick="goUser()">User Portal</button>`:''}
 `;
 }
 
@@ -406,19 +481,19 @@ const c=$('mainContent');
 c.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div>';
 try{
 if(view==='dashboard')await renderDashboard(c);
-else if(view==='vps'&&isAdmin())await renderAllVps(c);
+else if(view==='vps'&&isAdminRoute())await renderAllVps(c);
 else if(view==='my-vps')await renderMyVps(c);
 else if(view==='create-vps')renderCreateVps(c);
 else if(view==='tasks')await renderTasks(c);
-else if(view==='nodes'&&isAdmin())await renderNodes(c);
-else if(view==='ips'&&isAdmin())await renderIps(c);
-else if(view==='images'&&isAdmin())await renderImages(c);
-else if(view==='plans'&&isAdmin())await renderPlans(c);
-else if(view==='users'&&isAdmin())await renderUsers(c);
-else if(view==='audit'&&isAdmin())await renderAudit(c);
-else if(view==='settings'&&isAdmin())await renderSettings(c);
-else if(view==='backups'&&isAdmin())await renderAllBackups(c);
-else if(view==='snapshots'&&isAdmin())await renderAllSnapshots(c);
+else if(view==='nodes'&&isAdminRoute())await renderNodes(c);
+else if(view==='ips'&&isAdminRoute())await renderIps(c);
+else if(view==='images'&&isAdminRoute())await renderImages(c);
+else if(view==='plans'&&isAdminRoute())await renderPlans(c);
+else if(view==='users'&&isAdminRoute())await renderUsers(c);
+else if(view==='audit'&&isAdminRoute())await renderAudit(c);
+else if(view==='settings'&&isAdminRoute())await renderSettings(c);
+else if(view==='backups'&&isAdminRoute())await renderAllBackups(c);
+else if(view==='snapshots'&&isAdminRoute())await renderAllSnapshots(c);
 else if(view==='profile')renderProfile(c);
 else if(view==='notifications')await renderNotifications(c);
 else if(view.startsWith('vps-detail:'))await renderVpsDetail(c,view.split(':')[1]);
@@ -428,29 +503,62 @@ else c.innerHTML='<div class="empty-state"><div class="empty-state-icon">🔒</d
 
 // Dashboard
 async function renderDashboard(c){
-const d=await api('/api/dashboard');
-const v=await api('/api/vps');
+const scope=isAdminRoute()?'admin':'user';
+const d=await api(scoped('/api/dashboard',scope));
+const v=await api(scoped('/api/vps',scope));
+const headline=isAdminRoute()?'Control room':'Your portal';
+const subline=isAdminRoute()
+? 'Track nodes, users, and infrastructure from a single command center.'
+: 'Manage your VPS instances, profile, and notifications from one clean workspace.';
+const quickActions=isAdminRoute()
+? `<button class="btn btn-primary" onclick="navigate('vps')">Open VPS Fleet</button><button class="btn btn-secondary" onclick="navigate('users')">Manage Users</button>${isAdmin()?'<button class="btn btn-secondary admin-switch" onclick="goUser()">Open User Portal</button>':''}`
+: `<button class="btn btn-primary" onclick="navigate('create-vps')">Create VPS</button>${isAdmin()?'<button class="btn btn-secondary admin-switch" onclick="goAdmin()">Access Admin</button>':''}<button class="btn btn-secondary" onclick="navigate('profile')">Profile</button>`;
 c.innerHTML=`
-<div class="page-header"><h1>Dashboard</h1><p>Welcome back, ${esc(currentUser.username)}</p></div>
+<div class="hero-panel">
+<div class="hero-copy">
+<div class="hero-kicker">${isAdminRoute()?'Admin console':'User dashboard'}</div>
+<div class="hero-title">${esc(currentUser.username)}, <span>${headline}</span></div>
+<div class="hero-subtitle">${subline}</div>
+<div class="hero-actions" style="margin-top:18px">${quickActions}</div>
+</div>
+<div class="hero-actions">
+<div class="hero-chip"><strong>${d.total??0}</strong> VPS</div>
+<div class="hero-chip"><strong>${d.running??0}</strong> running</div>
+<div class="hero-chip"><strong>${d.tasks??0}</strong> active jobs</div>
+</div>
+</div>
 <div class="stats-grid">
 <div class="stat-card"><div class="stat-icon purple">🖥️</div><div class="stat-value">${d.total??0}</div><div class="stat-label">Total VPS</div></div>
 <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-value">${d.running??0}</div><div class="stat-label">Running</div></div>
 <div class="stat-card"><div class="stat-icon red">⛔</div><div class="stat-value">${d.stopped??0}</div><div class="stat-label">Stopped</div></div>
 <div class="stat-card"><div class="stat-icon yellow">⏳</div><div class="stat-value">${d.expiringSoon??0}</div><div class="stat-label">Expiring Soon</div></div>
-${isAdmin()?`
+${isAdminRoute()?`
 <div class="stat-card"><div class="stat-icon blue">🌐</div><div class="stat-value">${d.nodesOnline??0}</div><div class="stat-label">Nodes Online</div></div>
 <div class="stat-card"><div class="stat-icon purple">👥</div><div class="stat-value">${d.usersTotal??0}</div><div class="stat-label">Users</div></div>
 `:''}
 </div>
-<div class="card">
-<div class="card-header"><h2>${isAdmin()?'Recent VPS':'Your VPS'}</h2><button class="btn btn-primary btn-sm" onclick="navigate('create-vps')">+ Create</button></div>
+<div class="split-grid">
+<div class="card panel-card">
+<div class="card-header"><h2>${isAdminRoute()?'Recent VPS':'Your VPS'}</h2><button class="btn btn-primary btn-sm" onclick="navigate('create-vps')">+ Create</button></div>
 <div class="card-body">${v.length?`<table class="table"><thead><tr><th>Name</th><th>Status</th><th>Node</th><th>IP</th><th>Resources</th></tr></thead><tbody>${v.slice(0,8).map(x=>`<tr onclick="navigate('vps-detail:${x.id}')" style="cursor:pointer"><td><strong>${esc(x.name)}</strong><br><span style="color:var(--text-muted);font-size:11px">${esc(x.hostname)}</span></td><td>${statusBadge(x.status)}</td><td>${esc(x.node?.name)}</td><td style="font-family:monospace;font-size:12px">${esc(x.ip?.address)??'—'}</td><td>${x.cpu}C · ${Math.round(x.ramMiB/1024)}G · ${x.diskGiB}G</td></tr>`).join('')}</tbody></table>`:`<div class="empty-state"><div class="empty-state-icon">🖥️</div><h3>No VPS instances</h3><p>Create your first VPS to get started</p></div>`}</div>
+</div>
+<div class="card panel-card">
+<div class="card-header"><h2>Overview</h2></div>
+<div class="card-body padded">
+<div class="insight-grid">
+<div class="insight-card"><div class="label">Portal</div><div class="value">${isAdminRoute()?'Admin':'User'}</div><div class="meta">${isAdminRoute()?'Full control center':'Personal workspace'}</div></div>
+<div class="insight-card"><div class="label">Tasks</div><div class="value">${d.tasks??0}</div><div class="meta">Queued and running jobs</div></div>
+<div class="insight-card"><div class="label">Status</div><div class="value">${d.running??0}</div><div class="meta">Active VPS instances</div></div>
+<div class="insight-card"><div class="label">Focus</div><div class="value">${isAdminRoute()?'Infra':'VPS'}</div><div class="meta">${isAdminRoute()?'Teams and systems':'Servers and access'}</div></div>
+</div>
+</div>
+</div>
 </div>`;
 }
 
 // VPS List (Admin)
 async function renderAllVps(c){
-const v=await api('/api/vps');
+const v=await api(scoped('/api/vps','admin'));
 c.innerHTML=`
 <div class="page-header" style="display:flex;justify-content:space-between;align-items:start"><div><h1>All VPS</h1><p>Manage all virtual private servers</p></div><button class="btn btn-primary" onclick="navigate('create-vps')">+ Create VPS</button></div>
 <div class="stats-grid">
@@ -465,7 +573,7 @@ ${v.length?`<table class="table"><thead><tr><th>Name</th><th>Status</th><th>Node
 
 // My VPS (User)
 async function renderMyVps(c){
-const v=await api('/api/vps');
+const v=await api(scoped('/api/vps','user'));
 c.innerHTML=`
 <div class="page-header"><h1>My VPS</h1><p>Your virtual private servers</p></div>
 <div class="stats-grid">
@@ -502,7 +610,7 @@ c.innerHTML=`
 <div class="page-header" style="display:flex;justify-content:space-between;align-items:start">
 <div><h1>${esc(v.name)}</h1><p>${esc(v.hostname)} · ${esc(v.node?.name)}</p></div>
 <div style="display:flex;gap:8px">
-<button class="btn btn-secondary" onclick="navigate('${isAdmin()?'vps':'my-vps'}')">← Back</button>
+<button class="btn btn-secondary" onclick="navigate('${isAdminRoute()?'vps':'my-vps'}')">← Back</button>
 ${v.status==='STOPPED'?`<button class="btn btn-primary" onclick="vpsAction('${v.id}','start')">Start</button>`:''}
 ${v.status==='RUNNING'?`<button class="btn btn-secondary" onclick="vpsAction('${v.id}','stop')">Stop</button>`:''}
 <button class="btn btn-danger btn-sm" onclick="vpsAction('${v.id}','delete')">Delete</button>
@@ -538,7 +646,7 @@ ${v.status==='RUNNING'?`<button class="btn btn-secondary" onclick="vpsAction('${
 <button class="btn btn-primary" onclick="vpsAction('${v.id}','start')">▶ Start</button>
 <button class="btn btn-secondary" onclick="vpsAction('${v.id}','stop')">⏹ Stop</button>
 <button class="btn btn-secondary" onclick="vpsAction('${v.id}','restart')">🔄 Restart</button>
-${isAdmin()?`
+${isAdminRoute()?`
 <button class="btn btn-secondary" onclick="vpsAction('${v.id}','rdp-enable')">🖥️ Enable RDP</button>
 <button class="btn btn-danger" onclick="vpsAction('${v.id}','delete')">🗑 Delete</button>
 `:''}
@@ -553,7 +661,7 @@ c.innerHTML=`
 <form class="modal-form" id="createVpsForm">
 <div class="form-group"><label>VPS Name</label><input name="name" placeholder="My Server" required pattern="^[a-zA-Z0-9 _-]{1,64}$"></div>
 <div class="form-group"><label>Hostname</label><input name="hostname" placeholder="my-server" required pattern="^[a-zA-Z0-9-]{1,63}$"></div>
-${isAdmin()?'<div class="form-group"><label>User ID</label><input name="userId" placeholder="User CUID" required></div>':'<input type="hidden" name="userId" value="'+currentUser.id+'">'}
+${isAdminRoute()?'<div class="form-group"><label>User ID</label><input name="userId" placeholder="User CUID" required></div>':'<input type="hidden" name="userId" value="'+currentUser.id+'">'}
 <div class="form-group"><label>Operating System</label><select name="imageAlias" id="osSelect"><option value="ubuntu:24.04">Ubuntu 24.04</option><option value="ubuntu:22.04">Ubuntu 22.04</option><option value="debian:12">Debian 12</option></select></div>
 <div class="form-group"><label>CPU (vCPU)</label><input name="cpu" type="number" min="1" max="64" value="1"></div>
 <div class="form-group"><label>RAM (MB)</label><input name="ramMiB" type="number" min="512" max="524288" value="2048"></div>
@@ -581,7 +689,7 @@ try{await api('/api/vps',{method:'POST',body:JSON.stringify(d)});toast('VPS crea
 
 // Tasks
 async function renderTasks(c){
-const t=await api('/api/tasks');
+const t=await api(scoped('/api/tasks',isAdminRoute()?'admin':'user'));
 c.innerHTML=`
 <div class="page-header" style="display:flex;justify-content:space-between;align-items:start"><div><h1>Tasks</h1><p>Background operations</p></div><button class="btn btn-secondary" onclick="navigate('tasks')">Refresh</button></div>
 <div class="card"><div class="card-body">

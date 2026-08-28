@@ -21,8 +21,10 @@ async function createTask(type: string, vpsId: string | undefined, payload: obje
 export default async function vpsRoutes(app: FastifyInstance) {
   app.get("/api/vps", async request => {
     const s = await requireSession(request);
+    const scope = (request.query as { scope?: string }).scope;
+    const adminScope = scope === "admin" && has("ADMIN", s);
     return db.vps.findMany({
-      where: has("SUPPORT", s) ? {} : { userId: s.sub },
+      where: adminScope ? {} : { userId: s.sub },
       include: { node: { select: { name: true } }, ip: true, plan: { select: { name: true } }, rdp: true },
       orderBy: { createdAt: "desc" },
     });

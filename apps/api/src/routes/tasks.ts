@@ -9,8 +9,10 @@ const has = (min: Session["role"], s: Session) => hasRole(s.role, min);
 export default async function taskRoutes(app: FastifyInstance) {
   app.get("/api/tasks", async request => {
     const s = await requireSession(request);
+    const scope = (request.query as { scope?: string }).scope;
+    const adminScope = scope === "admin" && has("ADMIN", s);
     return db.task.findMany({
-      where: has("SUPPORT", s) ? {} : { vps: { userId: s.sub } },
+      where: adminScope ? {} : { vps: { userId: s.sub } },
       include: { vps: { select: { name: true } } },
       orderBy: { createdAt: "desc" },
       take: 100,

@@ -22,6 +22,8 @@ app.setErrorHandler((error, _request, reply) => {
 });
 
 app.get("/", async (_request, reply) => reply.type("text/html").send(await readFile(resolve(process.cwd(), "apps/web/index.html"), "utf8")));
+app.get("/admin", async (_request, reply) => reply.type("text/html").send(await readFile(resolve(process.cwd(), "apps/web/index.html"), "utf8")));
+app.get("/admin/*", async (_request, reply) => reply.type("text/html").send(await readFile(resolve(process.cwd(), "apps/web/index.html"), "utf8")));
 app.get("/health", async () => ({ status: "ok", service: "vexpanel-api" }));
 
 import authRoutes from "./routes/auth.js";
