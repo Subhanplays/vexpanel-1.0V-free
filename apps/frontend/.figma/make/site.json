@@ -1,0 +1,10 @@
+{
+  "description": "Manage LXD VPS instances effortlessly with a premium dark interface, offering resource monitoring, SSH access, and streamlined deployment for users.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

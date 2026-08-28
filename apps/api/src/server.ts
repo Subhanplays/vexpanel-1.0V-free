@@ -1,9 +1,11 @@
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
+import { constants as fsConstants } from "node:fs";
 import { resolve } from "node:path";
 import Fastify from "fastify";
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
+import fastifyStatic from "@fastify/static";
 import { db, shutdown } from "./lib/db.js";
 import { enforceCsrf } from "./auth.js";
 
@@ -21,10 +23,38 @@ app.setErrorHandler((error, _request, reply) => {
   return reply.status(statusCode).send({ error: error instanceof Error ? error.message : "Internal server error" });
 });
 
-app.get("/", async (_request, reply) => reply.type("text/html").send(await readFile(resolve(process.cwd(), "apps/web/index.html"), "utf8")));
-app.get("/admin", async (_request, reply) => reply.type("text/html").send(await readFile(resolve(process.cwd(), "apps/web/index.html"), "utf8")));
-app.get("/admin/*", async (_request, reply) => reply.type("text/html").send(await readFile(resolve(process.cwd(), "apps/web/index.html"), "utf8")));
+const frontendDist = resolve(process.cwd(), "apps/frontend/dist");
+const frontendIndex = resolve(frontendDist, "index.html");
+const legacyIndex = resolve(process.cwd(), "apps/web/index.html");
+const hasFrontend = await access(frontendIndex, fsConstants.F_OK).then(() => true).catch(() => false);
+
+if (hasFrontend) {
+  await app.register(fastifyStatic, {
+    root: frontendDist,
+    prefix: "/",
+    index: false,
+    decorateReply: false,
+  });
+}
+
+const serveIndex = async (_request: unknown, reply: any) => {
+  const file = hasFrontend ? frontendIndex : legacyIndex;
+  return reply.type("text/html").send(await readFile(file, "utf8"));
+};
+
+app.get("/", serveIndex);
+app.get("/login", serveIndex);
+app.get("/register", serveIndex);
+app.get("/admin", serveIndex);
+app.get("/admin/*", serveIndex);
 app.get("/health", async () => ({ status: "ok", service: "vexpanel-api" }));
+
+app.setNotFoundHandler(async (request, reply) => {
+  if (request.url.startsWith("/api/")) {
+    return reply.status(404).send({ error: "Not found" });
+  }
+  return serveIndex(request, reply);
+});
 
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
