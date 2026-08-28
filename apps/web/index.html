@@ -1,406 +1,755 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>VexPanel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:dark;--bg:#0b0d12;--pane:#11141b;--card:#171b23;--border:#2a303c;--text:#f1f3f6;--muted:#919aaa;--accent:#a78bfa;--ok:#34d399;--warn:#fbbf24;--bad:#fb7185;--radius:12px}
+:root{--bg:#09090b;--surface:#0f0f12;--card:#18181b;--card-hover:#1f1f23;--border:#27272a;--border-light:#3f3f46;--text:#fafafa;--text-secondary:#a1a1aa;--text-muted:#71717a;--accent:#8b5cf6;--accent-hover:#7c3aed;--accent-glow:rgba(139,92,246,0.15);--accent-glow-strong:rgba(139,92,246,0.3);--green:#22c55e;--green-bg:rgba(34,197,94,0.1);--red:#ef4444;--red-bg:rgba(239,68,68,0.1);--yellow:#eab308;--yellow-bg:rgba(234,179,8,0.1);--blue:#3b82f6;--blue-bg:rgba(59,130,246,0.1);--radius:12px;--radius-lg:16px;--radius-xl:20px;--shadow:0 1px 3px rgba(0,0,0,0.3),0 1px 2px rgba(0,0,0,0.2);--shadow-lg:0 10px 30px rgba(0,0,0,0.4);--transition:all 0.2s cubic-bezier(0.4,0,0.2,1)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font:14px Inter,system-ui,sans-serif;min-height:100vh}
-.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-.side{background:var(--pane);border-right:1px solid var(--border);padding:24px 14px;position:sticky;top:0;height:100vh;overflow-y:auto}
-.logo{padding:0 10px;font-size:22px;font-weight:800;letter-spacing:-1px}
-.logo em{font-style:normal;color:var(--accent)}
-.env{margin:25px 7px 15px;border:1px solid var(--border);border-radius:8px;padding:9px;color:var(--muted);font-size:11px;letter-spacing:.8px}
-.dot{color:var(--ok);float:right}
-.group{font-size:10px;color:#667083;font-weight:800;letter-spacing:1px;padding:14px 10px 6px}
-.nav{display:block;color:#a1a9b8;text-decoration:none;padding:9px 10px;border-radius:7px;cursor:pointer;font-size:13px}
-.nav:hover,.nav.active{background:#27203f;color:#e3dcff}
-.view{display:none;padding:30px 38px;width:min(1480px,100%);margin:auto}
-.view.active{display:block}
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:20px 30px;border-bottom:1px solid var(--border)}
-h1{font-size:25px;letter-spacing:-.8px}
-h2{font-size:18px;margin-bottom:15px}
-.sub{color:var(--muted);margin:7px 0 0;font-size:13px}
-.avatar{display:grid;place-items:center;background:#3b2d68;color:#e4dcff;border-radius:50%;width:36px;height:36px;font-weight:800;cursor:pointer}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:15px}
-.label{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.5px}
-.value{font-size:28px;font-weight:750;letter-spacing:-1px;margin-top:10px}
-.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-.button{border:0;border-radius:8px;background:var(--accent);color:#20133e;padding:9px 14px;font-weight:700;cursor:pointer;font-size:13px;transition:opacity .15s}
-.button:hover{opacity:.85}
-.button.secondary{background:transparent;border:1px solid var(--border);color:var(--text)}
-.button.danger{background:var(--bad);color:#fff}
-.button.sm{padding:6px 10px;font-size:12px}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:#fff}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--border-light)}
+
+/* Login Page */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.login-page::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);top:-200px;right:-200px;pointer-events:none}
+.login-page::after{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);bottom:-100px;left:-100px;pointer-events:none}
+.login-container{width:100%;max-width:420px;padding:20px;position:relative;z-index:1}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:40px;box-shadow:var(--shadow-lg)}
+.login-logo{text-align:center;margin-bottom:32px}
+.login-logo h1{font-size:32px;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,#fff 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.login-logo p{color:var(--text-muted);font-size:13px;margin-top:8px}
+.login-form{display:flex;flex-direction:column;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px}
+.form-group input{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;color:var(--text);font-size:14px;font-family:inherit;transition:var(--transition);outline:none}
+.form-group input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.form-group input::placeholder{color:var(--text-muted)}
+.login-btn{background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:14px;font-size:14px;font-weight:600;cursor:pointer;transition:var(--transition);font-family:inherit;margin-top:8px}
+.login-btn:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 4px 12px var(--accent-glow-strong)}
+.login-btn:active{transform:translateY(0)}
+.login-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.login-divider{display:flex;align-items:center;gap:12px;margin:4px 0}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.login-divider span{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+.login-social{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-size:14px;font-weight:500;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:10px;color:var(--text);font-family:inherit;width:100%}
+.login-social:hover{background:var(--card-hover);border-color:var(--border-light)}
+.login-footer{text-align:center;margin-top:24px;font-size:13px;color:var(--text-muted)}
+.login-footer a{color:var(--accent);text-decoration:none}
+.login-footer a:hover{text-decoration:underline}
+.login-error{background:var(--red-bg);border:1px solid rgba(239,68,68,0.3);border-radius:var(--radius);padding:12px;color:var(--red);font-size:13px;display:none}
+.login-error.show{display:block}
+
+/* App Layout */
+.app-layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:20px 12px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar-logo{display:flex;align-items:center;gap:12px;padding:8px 12px;margin-bottom:24px}
+.sidebar-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),#6d28d9);border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:16px;color:#fff}
+.sidebar-logo-text{font-size:18px;font-weight:700;letter-spacing:-0.5px}
+.sidebar-logo-text span{color:var(--accent)}
+.sidebar-nav{flex:1;display:flex;flex-direction:column;gap:2px}
+.sidebar-section{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;padding:16px 12px 8px;margin-top:8px}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text-secondary);text-decoration:none;font-size:13px;font-weight:500;cursor:pointer;transition:var(--transition)}
+.sidebar-item:hover{background:var(--card);color:var(--text)}
+.sidebar-item.active{background:var(--accent-glow);color:var(--accent)}
+.sidebar-item .icon{width:18px;text-align:center;font-size:14px}
+.sidebar-item .badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;padding:2px 6px;border-radius:10px;font-weight:600}
+.sidebar-user{border-top:1px solid var(--border);padding:16px 12px;display:flex;align-items:center;gap:10px;margin-top:auto}
+.sidebar-avatar{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#6d28d9);display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff}
+.sidebar-user-info{flex:1;min-width:0}
+.sidebar-user-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user-role{font-size:11px;color:var(--text-muted)}
+.sidebar-logout{color:var(--text-muted);cursor:pointer;padding:6px;border-radius:6px;transition:var(--transition)}
+.sidebar-logout:hover{background:var(--red-bg);color:var(--red)}
+
+/* Main Content */
+.main-content{padding:28px 32px;max-width:1400px}
+.page-header{margin-bottom:28px}
+.page-header h1{font-size:24px;font-weight:700;letter-spacing:-0.5px}
+.page-header p{color:var(--text-muted);font-size:13px;margin-top:4px}
+
+/* Stats Cards */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;transition:var(--transition)}
+.stat-card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:var(--shadow)}
+.stat-card .stat-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:18px;margin-bottom:12px}
+.stat-card .stat-icon.purple{background:var(--accent-glow);color:var(--accent)}
+.stat-card .stat-icon.green{background:var(--green-bg);color:var(--green)}
+.stat-card .stat-icon.red{background:var(--red-bg);color:var(--red)}
+.stat-card .stat-icon.yellow{background:var(--yellow-bg);color:var(--yellow)}
+.stat-card .stat-icon.blue{background:var(--blue-bg);color:var(--blue)}
+.stat-card .stat-value{font-size:28px;font-weight:700;letter-spacing:-1px}
+.stat-card .stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;font-weight:500}
+
+/* Cards & Tables */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.card-header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--border)}
+.card-header h2{font-size:15px;font-weight:600}
+.card-body{padding:0}
+.card-body.padded{padding:20px}
+
 .table{width:100%;border-collapse:collapse}
-.table th{text-align:left;font-size:10px;font-weight:800;letter-spacing:.8px;color:#667083;padding:10px 12px;border-bottom:1px solid var(--border)}
-.table td{padding:12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
-.table tr:hover td{background:rgba(167,139,250,.03)}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px;background:#1e222d;color:#a1a9b8}
-.badge.ok{background:#0d2818;color:var(--ok)}.badge.bad{background:#2d1219;color:var(--bad)}.badge.warn{background:#2d2412;color:var(--warn)}
-.mono{font-family:monospace;font-size:12px}
-.empty{text-align:center;padding:40px;color:var(--muted)}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;place-items:center}
-.modal.show{display:grid}
-.dialog{background:var(--pane);border:1px solid var(--border);border-radius:16px;padding:30px;max-width:500px;width:90%;max-height:85vh;overflow-y:auto}
-.form{display:flex;flex-direction:column;gap:12px}
-.form label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);font-weight:600}
-.form input,.form select,.form textarea{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px}
-.form input:focus,.form select:focus,.form textarea:focus{outline:none;border-color:var(--accent)}
-.form .checks{display:flex;flex-wrap:wrap;gap:10px}
-.form .checks label{flex-direction:row;align-items:center;gap:6px}
-.actions{display:flex;gap:10px;margin-top:15px}
-.toast{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 18px;font-size:13px;transform:translateY(80px);opacity:0;transition:all .3s;z-index:200}
+.table th{text-align:left;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface)}
+.table td{padding:14px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle}
+.table tbody tr{transition:var(--transition)}
+.table tbody tr:hover{background:var(--card-hover)}
+.table tbody tr:last-child td{border-bottom:none}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:var(--transition);border:none;font-family:inherit;white-space:nowrap}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hover);box-shadow:0 4px 12px var(--accent-glow-strong)}
+.btn-secondary{background:var(--card);border:1px solid var(--border);color:var(--text)}
+.btn-secondary:hover{border-color:var(--border-light);background:var(--card-hover)}
+.btn-danger{background:var(--red-bg);border:1px solid rgba(239,68,68,0.2);color:var(--red)}
+.btn-danger:hover{background:var(--red);color:#fff}
+.btn-sm{padding:6px 10px;font-size:12px}
+.btn-icon{width:32px;height:32px;padding:0;justify-content:center;border-radius:8px}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.2px}
+.badge-running{background:var(--green-bg);color:var(--green)}
+.badge-stopped{background:var(--red-bg);color:var(--red)}
+.badge-provisioning{background:var(--yellow-bg);color:var(--yellow)}
+.badge-suspended{background:var(--yellow-bg);color:var(--yellow)}
+.badge-error{background:var(--red-bg);color:var(--red)}
+.badge-online{background:var(--green-bg);color:var(--green)}
+.badge-offline{background:var(--red-bg);color:var(--red)}
+.badge-maintenance{background:var(--yellow-bg);color:var(--yellow)}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* Grid */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+/* VPS Card */
+.vps-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;cursor:pointer;transition:var(--transition)}
+.vps-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,0.3)}
+.vps-card-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:16px}
+.vps-card-name{font-size:15px;font-weight:600}
+.vps-card-specs{display:flex;gap:16px;margin-bottom:16px}
+.vps-card-spec{display:flex;flex-direction:column;gap:2px}
+.vps-card-spec-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px}
+.vps-card-spec-value{font-size:13px;font-weight:600}
+.vps-card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border)}
+.vps-card-ip{font-size:12px;color:var(--text-muted);font-family:monospace}
+
+/* Progress Bar */
+.progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width 0.3s}
+.progress-fill.green{background:var(--green)}
+.progress-fill.purple{background:var(--accent)}
+.progress-fill.yellow{background:var(--yellow)}
+.progress-fill.red{background:var(--red)}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;max-width:500px;width:90%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal h2{font-size:18px;font-weight:700;margin-bottom:4px}
+.modal p{color:var(--text-muted);font-size:13px;margin-bottom:20px}
+.modal-form{display:flex;flex-direction:column;gap:14px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 20px;font-size:13px;transform:translateY(80px);opacity:0;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);z-index:2000;box-shadow:var(--shadow-lg)}
 .toast.show{transform:translateY(0);opacity:1}
-.notice{background:#1a1625;border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--muted);margin-bottom:15px}
-.list .item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
-.list .item:last-child{border:none}
-.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px}
-.tab{padding:10px 18px;cursor:pointer;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
-.tab:hover{color:var(--text)}.tab.active{color:var(--accent);border-color:var(--accent)}
-.tab-content{display:none}.tab-content.active{display:block}
-.detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px}
-.detail-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
-.detail-card .label{margin-bottom:4px}
-.detail-card .value{font-size:18px;margin-top:4px}
-.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px}
-.progress-fill{height:100%;border-radius:3px;transition:width .3s}
-.rdp-card{background:linear-gradient(135deg,#1a1625,#171b23);border:1px solid var(--accent);border-radius:var(--radius);padding:20px}
-.rdp-status{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600}
-.rdp-dot{width:10px;height:10px;border-radius:50%}
-.rdp-dot.online{background:var(--ok)}.rdp-dot.offline{background:var(--bad)}.rdp-dot.reconnecting{background:var(--warn)}
-@media(max-width:768px){.app{grid-template-columns:1fr}.side{display:none}.view{padding:15px}.grid,.detail-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+.toast.success{border-color:rgba(34,197,94,0.3);background:var(--green-bg)}
+.toast.error{border-color:rgba(239,68,68,0.3);background:var(--red-bg)}
+
+/* Empty State */
+.empty-state{text-align:center;padding:48px 20px}
+.empty-state-icon{font-size:48px;margin-bottom:16px;opacity:0.5}
+.empty-state h3{font-size:16px;font-weight:600;margin-bottom:8px}
+.empty-state p{color:var(--text-muted);font-size:13px;max-width:300px;margin:0 auto}
+
+/* Responsive */
+@media(max-width:768px){
+.app-layout{grid-template-columns:1fr}
+.sidebar{display:none}
+.main-content{padding:16px}
+.stats-grid{grid-template-columns:repeat(2,1fr)}
+.grid-2,.grid-3{grid-template-columns:1fr}
+}
+
+/* Animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.animate-in{animation:fadeIn 0.3s ease forwards}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.pulse{animation:pulse 2s infinite}
 </style>
 </head>
 <body>
-<div class="app">
-<aside class="side">
-  <div class="logo">Vex<em>Panel</em></div>
-  <div class="env">CONTROL PLANE <span class="dot" id="statusDot">●</span></div>
-  <nav>
-    <div class="group">OVERVIEW</div>
-    <a class="nav active" data-view="dashboard">Dashboard</a>
-    <div class="group">COMPUTE</div>
-    <a class="nav" data-view="vps">My VPS</a>
-    <a class="nav" data-view="create-vps">Create VPS</a>
-    <a class="nav" data-view="tasks">Tasks</a>
-    <div class="group">INFRASTRUCTURE</div>
-    <a class="nav" data-view="nodes">Nodes</a>
-    <a class="nav" data-view="ips">IPv4 Pool</a>
-    <a class="nav" data-view="images">OS Images</a>
-    <div class="group">HOSTING</div>
-    <a class="nav" data-view="plans">Plans</a>
-    <a class="nav" data-view="backups">Backups</a>
-    <a class="nav" data-view="snapshots">Snapshots</a>
-    <div class="group">USERS</div>
-    <a class="nav" data-view="users">Users</a>
-    <div class="group">INTEGRATIONS</div>
-    <a class="nav" data-view="discord">Discord</a>
-    <div class="group">CUSTOMIZATION</div>
-    <a class="nav" data-view="ui-builder">Build UI</a>
-    <div class="group">SYSTEM</div>
-    <a class="nav" data-view="audit">Audit Log</a>
-    <a class="nav" data-view="settings">Settings</a>
-  </nav>
-</aside>
 
-<main>
-<div class="topbar">
-  <div>
-    <h1 id="title">Dashboard</h1>
-    <p id="subtitle" class="sub">Real infrastructure at a glance</p>
-  </div>
-  <div style="display:flex;align-items:center;gap:12px">
-    <div id="notifBell" style="cursor:pointer;position:relative" onclick="showNotifications()">🔔<span id="notifCount" style="display:none;position:absolute;top:-5px;right:-5px;background:var(--bad);color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;display:none;place-items:center"></span></div>
-    <div id="avatar" class="avatar">VP</div>
-  </div>
+<!-- Login Page -->
+<div id="loginPage" class="login-page" style="display:none">
+<div class="login-container">
+<div class="login-card">
+<div class="login-logo">
+<h1>VexPanel</h1>
+<p>The Complete VPS Hosting Control Panel</p>
+</div>
+<div id="loginError" class="login-error"></div>
+<form class="login-form" id="loginForm">
+<div class="form-group">
+<label>Email</label>
+<input type="email" name="email" placeholder="admin@vexpanel.local" required autocomplete="email">
+</div>
+<div class="form-group">
+<label>Password</label>
+<input type="password" name="password" placeholder="Enter your password" required minlength="12" autocomplete="current-password">
+</div>
+<button type="submit" class="login-btn" id="loginBtn">Sign In</button>
+<div class="login-divider"><span>or</span></div>
+<button type="button" class="login-social" onclick="window.location.href='/api/auth/discord'">
+<svg width="20" height="15" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A26.3 26.3 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.6 18.4-.9 31.5.4 44.4a.2.2 0 00.1.1 58.7 58.7 0 0017.7 9 .2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.7 38.7 0 01-5.5-2.6.2.2 0 01 0-.4c.4-.3.7-.6 1.1-.9a.2.2 0 01.2 0c11.5 5.3 24 5.3 35.4 0a.2.2 0 01.2 0l1.1.9a.2.2 0 010 .4c-1.8 1-3.6 1.9-5.6 2.6a.2.2 0 00-.1.3 47.2 47.2 0 003.7 5.9.2.2 0 00.2.1 58.5 58.5 0 0017.7-9 .2.2 0 00.1-.1c1.5-15.3-2.5-28.3-10.6-39.4a.2.2 0 00-.1-.1zM23.7 36.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.1 6.4-7.1 6.5 3.2 6.4 7.1c0 3.9-2.9 7.1-6.4 7.1zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.1 6.4-7.1 6.5 3.2 6.4 7.1c0 3.9-2.8 7.1-6.4 7.1z" fill="#5865F2"/></svg>
+Continue with Discord
+</button>
+</form>
+<div class="login-footer">
+Don't have an account? <a href="#" onclick="showRegister();return false">Create one</a>
+</div>
+</div>
+</div>
 </div>
 
-<!-- Dashboard -->
-<section id="dashboard" class="view active">
-  <div class="stats" id="dashStats"></div>
-  <div class="grid">
-    <div class="card"><div class="head"><h2>VPS Fleet</h2><button class="button secondary sm" onclick="navigate('vps')">View All</button></div><div id="dashVps"><div class="empty">Loading...</div></div></div>
-    <div class="card"><h2>System Health</h2><div id="sysHealth" class="list"></div></div>
-  </div>
-</section>
+<!-- Register Page -->
+<div id="registerPage" class="login-page" style="display:none">
+<div class="login-container">
+<div class="login-card">
+<div class="login-logo">
+<h1>VexPanel</h1>
+<p>Create your account</p>
+</div>
+<div id="registerError" class="login-error"></div>
+<form class="login-form" id="registerForm">
+<div class="form-group">
+<label>Username</label>
+<input type="text" name="username" placeholder="john" required pattern="^[a-zA-Z0-9_-]{3,32}$">
+</div>
+<div class="form-group">
+<label>Email</label>
+<input type="email" name="email" placeholder="john@example.com" required>
+</div>
+<div class="form-group">
+<label>Password</label>
+<input type="password" name="password" placeholder="Min 12 characters" required minlength="12">
+</div>
+<button type="submit" class="login-btn">Create Account</button>
+</form>
+<div class="login-footer">
+Already have an account? <a href="#" onclick="showLogin();return false">Sign in</a>
+</div>
+</div>
+</div>
+</div>
 
-<!-- VPS List -->
-<section id="vps" class="view">
-  <div class="head"><div><h2>Virtual Private Servers</h2><p class="sub">Manage your LXD system containers</p></div><button class="button" onclick="navigate('create-vps')">Create VPS</button></div>
-  <div class="card"><table class="table"><thead><tr><th>NAME</th><th>STATUS</th><th>NODE</th><th>IP</th><th>RESOURCES</th><th></th></tr></thead><tbody id="vpsRows"></tbody></table></div>
-</section>
-
-<!-- Create VPS -->
-<section id="create-vps" class="view">
-  <div class="head"><div><h2>Create VPS</h2><p class="sub">Deploy a new LXD system container</p></div></div>
-  <div class="card" style="max-width:600px">
-    <form id="createVpsForm" class="form">
-      <label>VPS Name<input name="name" required pattern="^[a-zA-Z0-9 _-]{1,64}$" placeholder="My Server"></label>
-      <label>Hostname<input name="hostname" required pattern="^[a-zA-Z0-9-]{1,63}$" placeholder="my-server"></label>
-      <label>User ID<input name="userId" required placeholder="User CUID"></label>
-      <label>Operating System<select name="imageAlias" id="osSelect"></select></label>
-      <label>Node<select name="nodeId" id="nodeSelect"><option value="">Automatic</option></select></label>
-      <label>Plan<select name="planId" id="planSelectVps"><option value="">Custom</option></select></label>
-      <div class="grid">
-        <label>CPU (vCPU)<input name="cpu" type="number" min="1" max="64" value="1"></label>
-        <label>RAM (MB)<input name="ramMiB" type="number" min="512" max="524288" value="2048"></label>
-      </div>
-      <label>Disk (GB)<input name="diskGiB" type="number" min="5" max="4096" value="25"></label>
-      <label>Expiration (days, 0=never)<input name="expiresDays" type="number" min="0" value="30"></label>
-      <div class="checks" style="margin-top:8px">
-        <label><input type="checkbox" name="ipv4" checked> IPv4</label>
-        <label><input type="checkbox" name="rdp"> RDP</label>
-        <label><input type="checkbox" name="sshx" checked> SSHX</label>
-        <label><input type="checkbox" name="tailscale"> Tailscale</label>
-      </div>
-      <div class="actions"><button class="button" type="submit">Create VPS</button></div>
-    </form>
-  </div>
-</section>
-
-<!-- VPS Detail -->
-<section id="vps-detail" class="view">
-  <div class="head"><div><h2 id="vpsDetailName">VPS</h2><p class="sub" id="vpsDetailSub">Details</p></div><button class="button secondary" onclick="navigate('vps')">← Back</button></div>
-  <div class="tabs" id="vpsTabs">
-    <div class="tab active" data-tab="overview">Overview</div>
-    <div class="tab" data-tab="console">Console</div>
-    <div class="tab" data-tab="terminal">Terminal</div>
-    <div class="tab" data-tab="network">Network</div>
-    <div class="tab" data-tab="rdp">RDP</div>
-    <div class="tab" data-tab="snapshots-tab">Snapshots</div>
-    <div class="tab" data-tab="backups-tab">Backups</div>
-    <div class="tab" data-tab="activity">Activity</div>
-    <div class="tab" data-tab="settings-tab">Settings</div>
-  </div>
-  <div id="tab-overview" class="tab-content active"></div>
-  <div id="tab-console" class="tab-content"><div class="card"><p>LXD console access requires the node agent. Console sessions are proxied through the API.</p></div></div>
-  <div id="tab-terminal" class="tab-content"><div class="card"><div id="terminalFrame" style="min-height:400px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px"><p>SSHX terminal connects to your VPS through the node agent.</p><button class="button" onclick="openTerminal()">Launch Terminal</button><div id="terminalUrl" style="display:none"><a href="#" target="_blank" id="terminalLink" style="color:var(--accent)"></a></div></div></div></div>
-  <div id="tab-network" class="tab-content"></div>
-  <div id="tab-rdp" class="tab-content"></div>
-  <div id="tab-snapshots-tab" class="tab-content"></div>
-  <div id="tab-backups-tab" class="tab-content"></div>
-  <div id="tab-activity" class="tab-content"></div>
-  <div id="tab-settings-tab" class="tab-content"></div>
-</section>
-
-<!-- Tasks -->
-<section id="tasks" class="view">
-  <div class="head"><div><h2>Tasks</h2><p class="sub">Background infrastructure operations</p></div><button class="button secondary" onclick="loadTasks()">Refresh</button></div>
-  <div class="card"><table class="table"><thead><tr><th>TASK</th><th>VPS</th><th>STATUS</th><th>PROGRESS</th><th>CREATED</th><th></th></tr></thead><tbody id="taskRows"></tbody></table></div>
-</section>
-
-<!-- Nodes -->
-<section id="nodes" class="view">
-  <div class="head"><div><h2>Infrastructure Nodes</h2><p class="sub">LXD host agents</p></div><button class="button" onclick="openForm('node')">Add Node</button></div>
-  <div class="card"><table class="table"><thead><tr><th>NODE</th><th>ADDRESS</th><th>STATUS</th><th>LXD</th><th>VPS</th><th></th></tr></thead><tbody id="nodeRows"></tbody></table></div>
-</section>
-
-<!-- IPv4 Pool -->
-<section id="ips" class="view">
-  <div class="head"><div><h2>IPv4 Pool</h2><p class="sub">Public address inventory</p></div><button class="button" onclick="openForm('ip')">Add IPv4</button></div>
-  <div class="card"><table class="table"><thead><tr><th>ADDRESS</th><th>NODE</th><th>ASSIGNED VPS</th><th>STATUS</th><th></th></tr></thead><tbody id="ipRows"></tbody></table></div>
-</section>
-
-<!-- OS Images -->
-<section id="images" class="view">
-  <div class="head"><div><h2>OS Image Catalog</h2><p class="sub">LXD image aliases for provisioning</p></div><button class="button" onclick="openForm('image')">Add Image</button></div>
-  <div class="card"><table class="table"><thead><tr><th>NAME</th><th>DISTRIBUTION</th><th>RELEASE</th><th>ARCH</th><th>ALIAS</th><th>STATUS</th><th></th></tr></thead><tbody id="imageRows"></tbody></table></div>
-</section>
-
-<!-- Plans -->
-<section id="plans" class="view">
-  <div class="head"><div><h2>Plans</h2><p class="sub">Resource entitlements</p></div><button class="button" onclick="openForm('plan')">Create Plan</button></div>
-  <div class="card"><table class="table"><thead><tr><th>PLAN</th><th>CPU</th><th>RAM</th><th>DISK</th><th>LIMIT</th><th>FEATURES</th><th></th></tr></thead><tbody id="planRows"></tbody></table></div>
-</section>
-
-<!-- Backups -->
-<section id="backups" class="view">
-  <div class="head"><div><h2>Backups</h2><p class="sub">LXD backup exports</p></div></div>
-  <div class="card"><table class="table"><thead><tr><th>NAME</th><th>VPS</th><th>STATUS</th><th>SIZE</th><th>CREATED</th><th></th></tr></thead><tbody id="backupRows"></tbody></table></div>
-</section>
-
-<!-- Snapshots -->
-<section id="snapshots" class="view">
-  <div class="head"><div><h2>Snapshots</h2><p class="sub">LXD snapshots</p></div></div>
-  <div class="card"><table class="table"><thead><tr><th>NAME</th><th>VPS</th><th>SIZE</th><th>CREATED</th><th></th></tr></thead><tbody id="snapshotRows"></tbody></table></div>
-</section>
-
-<!-- Users -->
-<section id="users" class="view">
-  <div class="head"><div><h2>Users</h2><p class="sub">Accounts and roles</p></div><button class="button" onclick="openForm('user')">Create User</button></div>
-  <div class="card"><table class="table"><thead><tr><th>USER</th><th>ROLE</th><th>PLAN</th><th>VPS</th><th>STATUS</th><th></th></tr></thead><tbody id="userRows"></tbody></table></div>
-</section>
-
-<!-- Discord -->
-<section id="discord" class="view">
-  <div class="head"><div><h2>Discord Integration</h2><p class="sub">Bot configuration and account linking</p></div></div>
-  <div class="card" style="max-width:500px">
-    <h2>Bot Commands</h2>
-    <div class="list" style="margin-top:12px">
-      <div class="item"><span>/status</span><span class="badge">System status</span></div>
-      <div class="item"><span>/vps</span><span class="badge">Your VPS list</span></div>
-      <div class="item"><span>/myvps</span><span class="badge">VPS details</span></div>
-      <div class="item"><span>/panel</span><span class="badge">Dashboard link</span></div>
-      <div class="item"><span>/help</span><span class="badge">Command list</span></div>
-    </div>
-    <div class="notice" style="margin-top:15px">Configure DISCORD_TOKEN, DISCORD_CLIENT_ID and DISCORD_GUILD_ID in the server environment.</div>
-  </div>
-</section>
-
-<!-- UI Builder -->
-<section id="ui-builder" class="view">
-  <div class="head"><div><h2>Build Your Own UI</h2><p class="sub">AI-powered dashboard customization</p></div></div>
-  <div class="card" style="max-width:600px">
-    <form id="uiGenForm" class="form">
-      <label>Enter your Gemini API Key (optional - uses server key if empty)<input name="apiKey" type="password" placeholder="AIza..."></label>
-      <label>Describe your dashboard<div><textarea name="prompt" rows="4" placeholder="Make the sidebar smaller, use dark grey background, purple buttons, rounded cards..." style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-size:13px;resize:vertical"></textarea></div></label>
-      <div class="actions"><button class="button" type="submit">Generate</button><button type="button" class="button secondary" onclick="loadUiVersions()">Load Saved</button></div>
-    </form>
-    <div id="uiPreview" style="margin-top:15px;display:none">
-      <h3>Preview Configuration</h3>
-      <pre id="uiPreviewJson" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;overflow-x:auto;margin-top:8px"></pre>
-      <div class="actions" style="margin-top:10px"><button class="button" onclick="applyUiConfig()">Apply</button><button class="button secondary" onclick="document.getElementById('uiPreview').style.display='none'">Cancel</button></div>
-    </div>
-    <div id="uiVersions" style="margin-top:15px"></div>
-  </div>
-</section>
-
-<!-- Audit Log -->
-<section id="audit" class="view">
-  <div class="head"><div><h2>Audit Log</h2><p class="sub">Security-relevant actions</p></div><button class="button secondary" onclick="loadAudit()">Refresh</button></div>
-  <div class="card"><table class="table"><thead><tr><th>ACTION</th><th>ACTOR</th><th>TARGET</th><th>RESULT</th><th>IP</th><th>TIME</th></tr></thead><tbody id="auditRows"></tbody></table></div>
-</section>
-
-<!-- Settings -->
-<section id="settings" class="view">
-  <div class="head"><div><h2>Settings</h2><p class="sub">Non-secret configuration</p></div></div>
-  <div class="notice">Secrets (Discord, Tailscale, Pinggy, JWT) belong in the server environment.</div>
-  <div class="card"><table class="table"><thead><tr><th>SETTING</th><th>VALUE</th><th></th></tr></thead><tbody id="settingRows"></tbody></table></div>
-</section>
-
-<!-- Notifications Panel -->
-<section id="notifications-panel" class="view">
-  <div class="head"><div><h2>Notifications</h2><p class="sub">Panel notifications</p></div><button class="button secondary" onclick="markAllRead()">Mark All Read</button></div>
-  <div class="card" id="notifList"></div>
-</section>
-</main>
+<!-- Main App -->
+<div id="appLayout" class="app-layout" style="display:none">
+<aside class="sidebar">
+<div class="sidebar-logo">
+<div class="sidebar-logo-icon">V</div>
+<div class="sidebar-logo-text">Vex<span>Panel</span></div>
+</div>
+<nav class="sidebar-nav" id="sidebarNav"></nav>
+<div class="sidebar-user" id="sidebarUser"></div>
+</aside>
+<main class="main-content" id="mainContent"></main>
 </div>
 
 <!-- Modal -->
-<div id="modal" class="modal" onclick="if(event.target===this)closeForm()">
-  <div class="dialog">
-    <h2 id="formTitle"></h2>
-    <p id="formText" class="sub" style="margin:8px 0 16px"></p>
-    <form id="form" class="form"></form>
-    <div class="actions"><button class="button" form="form">Save</button><button type="button" class="button secondary" onclick="closeForm()">Cancel</button></div>
-  </div>
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+<div class="modal">
+<h2 id="modalTitle"></h2>
+<p id="modalDesc"></p>
+<form class="modal-form" id="modalForm"></form>
+<div class="modal-actions">
+<button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+<button type="submit" class="btn btn-primary" form="modalForm">Save</button>
 </div>
-<div id="toast" class="toast"></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-const $=x=>document.getElementById(x);
-const meta={dashboard:['Dashboard','Real infrastructure at a glance'],vps:['My VPS','Manage system containers'],['create-vps':['Create VPS','Deploy a new LXD container'],'vps-detail':['VPS Details',''],tasks:['Tasks','Background operations'],nodes:['Infrastructure Nodes','LXD host agents'],ips:['IPv4 Pool','Public address inventory'],images:['OS Images','LXD image catalog'],plans:['Plans','Resource entitlements'],backups:['Backups','LXD backup exports'],snapshots:['Snapshots','LXD snapshots'],users:['Users','Accounts and roles'],discord:['Discord','Bot integration'],['ui-builder':['Build UI','AI customization'],audit:['Audit Log','Security events'],settings:['Settings','Configuration'],['notifications-panel',['Notifications','Panel notifications']};
+const API=session=>fetch(session?{credentials:'include'}:{});
+let currentUser=null, currentView='dashboard';
 
-let currentUser=null,currentVpsId=null,pendingUiConfig=null;
-
+// Auth
 function csrf(){return document.cookie.split('; ').find(v=>v.startsWith('csrf='))?.slice(5)}
 async function api(path,opt={}){const r=await fetch(path,{credentials:'include',headers:{'content-type':'application/json','x-csrf-token':csrf(),...(opt.headers||{})},...opt});if(!r.ok)throw Error((await r.json().catch(()=>({}))).error||'Request failed');return r.status===204?null:r.json()}
-function esc(v){return String(v??'—').replace(/[&<>"']/c,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function state(v){return `<span class="badge${/FAILED|ERROR|OFFLINE|SUSPENDED|DELETED/.test(v)?' bad':/QUEUED|RUNNING|PROVISIONING|MAINTENANCE|RESERVED|INSTALLING|RECONNECTING/.test(v)?' warn':''}">${esc(v)}</span>`}
-function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),3500)}
-function empty(c,n,t){$(c).innerHTML=`<tr><td colspan="${n}" class="empty"><div><b>${t}</b></div></td></tr>`}
+function esc(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function toast(msg,type='success'){const t=$('toast');t.textContent=msg;t.className='toast show '+type;setTimeout(()=>t.classList.remove('show'),3000)}
+function $(id){return document.getElementById(id)}
 
-function navigate(view){document.querySelectorAll('.view,.nav').forEach(e=>e.classList.remove('active'));$(view)?.classList.add('active');document.querySelector(`[data-view="${view}"]`)?.classList.add('active');const m=meta[view];if(m){$('title').textContent=m[0];$('subtitle').textContent=m[1]}({dashboard:loadDash,vps:loadVps,tasks:loadTasks,nodes:loadNodes,ips:loadIps,images:loadImages,plans:loadPlans,users:loadUsers,audit:loadAudit,settings:loadSettings,backups:loadAllBackups,snapshots:loadAllSnapshots,'ui-builder':loadUiVersions,'notifications-panel':loadNotifications}[view]||(()=>{}))()}
-document.querySelectorAll('.nav').forEach(a=>a.onclick=()=>navigate(a.dataset.view));
+async function checkAuth(){
+try{
+currentUser=await api('/api/me');
+showApp();
+}catch{
+showLogin();
+}
+}
 
-async function loadDash(){try{const d=await api('/api/dashboard');$('dashStats').innerHTML=`<div class="card"><div class="label">TOTAL VPS</div><div class="value">${d.total??0}</div></div><div class="card"><div class="label">RUNNING</div><div class="value ok">${d.running??0}</div></div><div class="card"><div class="label">STOPPED</div><div class="value">${d.stopped??0}</div></div><div class="card"><div class="label">SUSPENDED</div><div class="value warn">${d.suspended??0}</div></div><div class="card"><div class="label">ACTIVE TASKS</div><div class="value">${d.tasks??0}</div></div><div class="card"><div class="label">NODES ONLINE</div><div class="value">${d.nodesOnline??'—'}</div></div><div class="card"><div class="label">IPv4 AVAILABLE</div><div class="value">${d.ipsAvailable??'—'}</div></div><div class="card"><div class="label">EXPIRING SOON</div><div class="value warn">${d.expiringSoon??0}</div></div>`;const vs=await api('/api/vps');$('dashVps').innerHTML=vs.length?vs.slice(0,8).map(v=>`<div class="item" style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="viewVps('${v.id}')"><span><b>${esc(v.name)}</b><br><span class="mono">${esc(v.node?.name)}</span></span>${state(v.status)}</div>`).join(''):'<div class="empty"><b>No VPS instances</b></div>';$('sysHealth').innerHTML=`<div class="item"><span>API</span><span class="badge ok">ONLINE</span></div><div class="item"><span>Nodes</span><span class="badge ${d.nodesOnline?'ok':'warn'}">${d.nodesOnline??0} ONLINE</span></div><div class="item"><span>Users</span><span class="badge">${d.usersTotal??0}</span></div>`;loadNotifCount()}catch(e){$('dashStats').innerHTML='<div class="empty">Failed to load dashboard</div>'}}
+function showLogin(){
+$('loginPage').style.display='';
+$('registerPage').style.display='none';
+$('appLayout').style.display='none';
+}
 
-async function loadVps(){try{const v=await api('/api/vps');if(!v.length)return empty('vpsRows',6,'No VPS instances found.');$('vpsRows').innerHTML=v.map(x=>`<tr style="cursor:pointer" onclick="viewVps('${x.id}')"><td><b>${esc(x.name)}</b><br><span class="mono">${esc(x.hostname)}</span></td><td>${state(x.status)}</td><td>${esc(x.node?.name)}</td><td class="mono">${esc(x.ip?.address)}</td><td>${x.cpu}C · ${Math.round(x.ramMiB/1024)}G · ${x.diskGiB}G</td><td><button class="button secondary sm" onclick="event.stopPropagation();vpsAction('${x.id}','restart')">Restart</button></td></tr>`).join('')}catch(e){empty('vpsRows',6,e.message)}}
+function showRegister(){
+$('loginPage').style.display='none';
+$('registerPage').style.display='';
+$('appLayout').style.display='none';
+}
 
-async function viewVps(id){currentVpsId=id;try{const v=await api(`/api/vps/${id}`);navigate('vps-detail');$('vpsDetailName').textContent=v.name;$('vpsDetailSub').textContent=`${v.hostname} · ${v.node?.name} · ${v.status}`;$('tab-overview').innerHTML=`<div class="stats"><div class="card"><div class="label">STATUS</div><div class="value">${state(v.status)}</div></div><div class="card"><div class="label">CPU</div><div class="value">${v.cpu} vCPU</div></div><div class="card"><div class="label">RAM</div><div class="value">${Math.round(v.ramMiB/1024)} GB</div></div><div class="card"><div class="label">DISK</div><div class="value">${v.diskGiB} GB</div></div></div><div class="grid"><div class="card"><h2>Details</h2><div class="list"><div class="item"><span>Operating System</span><span class="mono">${esc(v.imageAlias)}</span></div><div class="item"><span>Node</span><span>${esc(v.node?.name)}</span></div><div class="item"><span>LXD Name</span><span class="mono">${esc(v.lxdName)}</span></div><div class="item"><span>Plan</span><span>${esc(v.plan?.name)??'Custom'}</span></div><div class="item"><span>Created</span><span>${new Date(v.createdAt).toLocaleDateString()}</span></div><div class="item"><span>Expires</span><span>${v.expiresAt?new Date(v.expiresAt).toLocaleDateString():'Never'}</span></div></div></div><div class="card"><h2>Actions</h2><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"><button class="button sm" onclick="vpsAction('${v.id}','start')">Start</button><button class="button secondary sm" onclick="vpsAction('${v.id}','stop')">Stop</button><button class="button secondary sm" onclick="vpsAction('${v.id}','restart')">Restart</button><button class="button danger sm" onclick="vpsAction('${v.id}','delete')">Delete</button></div></div></div>`;$('tab-network').innerHTML=`<div class="card"><h2>Network</h2><div class="list"><div class="item"><span>Public IPv4</span><span class="mono">${esc(v.ip?.address)??'None'}</span></div><div class="item"><span>IPv6</span><span class="mono">${esc(v.ipv6)??'Disabled'}</span></div><div class="item"><span>Private IP</span><span class="mono">${esc(v.privateIp)??'N/A'}</span></div><div class="item"><span>Tailscale</span><span class="mono">${esc(v.tailscaleIp)??'Not configured'}</span></div></div></div>`;$('tab-rdp').innerHTML=`<div class="rdp-card"><div class="rdp-status"><div class="rdp-dot ${v.rdp?.enabled?'online':'offline'}"></div>${v.rdp?.enabled?`RDP Enabled - ${v.rdp.provider}`:'RDP Disabled'}</div>${v.rdp?.enabled?`<div style="margin-top:15px" class="list"><div class="item"><span>Address</span><span class="mono">${esc(v.rdp.host)}:${v.rdp.port}</span></div><div class="item"><span>Username</span><span>${esc(v.rdp.username)}</span></div><div class="item"><span>Provider</span><span>${esc(v.rdp.provider)}</span></div></div><div style="margin-top:15px;display:flex;gap:8px"><button class="button sm" onclick="vpsAction('${v.id}','rdp-reset-password')">Reset Password</button><button class="button secondary sm" onclick="vpsAction('${v.id}','rdp-restart')">Restart RDP</button><button class="button danger sm" onclick="vpsAction('${v.id}','rdp-disable')">Disable RDP</button></div>`:`<div style="margin-top:15px"><button class="button" onclick="vpsAction('${v.id}','rdp-enable')">Enable RDP</button><p class="sub" style="margin-top:8px">Installs XFCE + xrdp inside your VPS</p></div>`}</div>`;await loadVpsSnapshots(v.id);await loadVpsBackups(v.id);await loadVpsActivity(v.id);$('tab-settings-tab').innerHTML=`<div class="card"><h2>VPS Settings</h2><form class="form" onsubmit="event.preventDefault();updateVps('${v.id}',this)"><label>Name<input name="name" value="${esc(v.name)}" required></label><label>Hostname<input name="hostname" value="${esc(v.hostname)}" required></label><div class="actions"><button class="button" type="submit">Save</button></div></form></div>`}catch(e){$('tab-overview').innerHTML=`<div class="empty">${e.message}</div>`}}
+function showApp(){
+$('loginPage').style.display='none';
+$('registerPage').style.display='none';
+$('appLayout').style.display='';
+renderSidebar();
+navigate('dashboard');
+}
 
-async function loadVpsSnapshots(vpsId){try{const s=await api(`/api/vps/${vpsId}/snapshots`);$('tab-snapshots-tab').innerHTML=`<div class="card"><div class="head"><h2>Snapshots</h2><button class="button sm" onclick="createSnapshot('${vpsId}')">Create Snapshot</button></div>${s.length?`<table class="table"><thead><tr><th>NAME</th><th>CREATED</th><th>SIZE</th><th></th></tr></thead><tbody>${s.map(x=>`<tr><td>${esc(x.name)}</td><td>${new Date(x.createdAt).toLocaleString()}</td><td>${x.sizeBytes?(x.sizeBytes/1048576).toFixed(1)+' MB':'—'}</td><td><button class="button secondary sm" onclick="deleteSnapshot('${vpsId}','${x.id}')">Delete</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No snapshots</div>'}</div>`}catch{}}
-
-async function loadVpsBackups(vpsId){try{const b=await api(`/api/vps/${vpsId}/backups`);$('tab-backups-tab').innerHTML=`<div class="card"><div class="head"><h2>Backups</h2><button class="button sm" onclick="createBackup('${vpsId}')">Create Backup</button></div>${b.length?`<table class="table"><thead><tr><th>NAME</th><th>STATUS</th><th>SIZE</th><th>CREATED</th><th></th></tr></thead><tbody>${b.map(x=>`<tr><td>${esc(x.name)}</td><td>${state(x.status)}</td><td>${x.sizeBytes?(x.sizeBytes/1048576).toFixed(1)+' MB':'—'}</td><td>${new Date(x.createdAt).toLocaleString()}</td><td><button class="button secondary sm" onclick="deleteBackup('${vpsId}','${x.id}')">Delete</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No backups</div>'}</div>`}catch{}}
-
-async function loadVpsActivity(vpsId){try{const t=await api('/api/tasks');const vpsTasks=t.filter(x=>x.vpsId===vpsId).slice(0,20);$('tab-activity').innerHTML=`<div class="card"><h2>Activity</h2>${vpsTasks.length?`<table class="table"><thead><tr><th>TASK</th><th>STATUS</th><th>PROGRESS</th><th>CREATED</th></tr></thead><tbody>${vpsTasks.map(x=>`<tr><td>${esc(x.type)}</td><td>${state(x.status)}</td><td><div class="progress-bar"><div class="progress-fill" style="width:${x.progress}%;background:var(--accent)"></div></div>${x.progress}%</td><td>${new Date(x.createdAt).toLocaleString()}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No activity</div>'}</div>`}catch{}}
-
-function openTerminal(){if(!currentVpsId)return;toast('Terminal requires SSHX agent setup');}
-
-async function loadTasks(){try{const a=await api('/api/tasks');if(!a.length)return empty('taskRows',6,'No tasks.');$('taskRows').innerHTML=a.map(x=>`<tr><td>${esc(x.type)}</td><td>${esc(x.vps?.name)}</td><td>${state(x.status)}</td><td><div class="progress-bar"><div class="progress-fill" style="width:${x.progress}%;background:var(--accent)"></div></div>${x.progress}%</td><td>${new Date(x.createdAt).toLocaleString()}</td><td>${x.status==='QUEUED'?`<button class="button secondary sm" onclick="cancelTask('${x.id}')">Cancel</button>`:''}</td></tr>`).join('')}catch(e){empty('taskRows',6,e.message)}}
-
-async function loadNodes(){try{const a=await api('/api/nodes');if(!a.length)return empty('nodeRows',6,'No nodes enrolled.');$('nodeRows').innerHTML=a.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td class="mono">${esc(x.address)}</td><td>${state(x.status)}</td><td>${esc(x.lxdVersion)??'—'}</td><td>${x._count?.vpses??0}</td><td><button class="button secondary sm" onclick="toggleMaintenance('${x.id}',${x.status!=='MAINTENANCE'})">${x.status==='MAINTENANCE'?'Online':'Maintenance'}</button></td></tr>`).join('')}catch(e){empty('nodeRows',6,e.message)}}
-
-async function loadIps(){try{const a=await api('/api/ipv4');if(!a.length)return empty('ipRows',5,'No IPs configured.');$('ipRows').innerHTML=a.map(x=>`<tr><td class="mono">${esc(x.address)}/${x.cidr}</td><td>${esc(x.node?.name)}</td><td>${esc(x.vps?.name)??'—'}</td><td>${state(x.status)}</td><td>${x.status!=='ASSIGNED'?`<button class="button secondary sm" onclick="reserveIp('${x.id}',${x.status!=='RESERVED'})">${x.status==='RESERVED'?'Release':'Reserve'}</button>`:''}</td></tr>`).join('')}catch(e){empty('ipRows',5,e.message)}}
-
-async function loadImages(){try{const a=await api('/api/os-images');if(!a.length)return empty('imageRows',7,'No images.');$('imageRows').innerHTML=a.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td>${esc(x.distribution)}</td><td>${esc(x.release)}</td><td>${esc(x.architecture)}</td><td class="mono">${esc(x.imageAlias)}</td><td>${state(x.enabled?'ENABLED':'DISABLED')}</td><td><button class="button secondary sm" onclick="deleteImage('${x.id}')">Delete</button></td></tr>`).join('')}catch(e){empty('imageRows',7,e.message)}}
-
-async function loadPlans(){try{const a=await api('/api/plans');if(!a.length)return empty('planRows',7,'No plans.');$('planRows').innerHTML=a.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td>${x.cpu}C</td><td>${Math.round(x.ramMiB/1024)}G</td><td>${x.diskGiB}G</td><td>${x.vpsLimit}</td><td>${['ipv4','rdp','sshx','tailscale','backups','snapshots'].filter(k=>x[k]).join(', ')||'—'}</td><td><button class="button secondary sm" onclick="deletePlan('${x.id}')">Delete</button></td></tr>`).join('')}catch(e){empty('planRows',7,e.message)}}
-
-async function loadUsers(){try{const a=await api('/api/users');if(!a.length)return empty('userRows',6,'No users.');$('userRows').innerHTML=a.map(x=>`<tr><td><b>${esc(x.username)}</b><br><span class="mono">${esc(x.email)}</span></td><td>${esc(x.role)}</td><td>${esc(x.plan?.name)??'—'}</td><td>${x._count?.vpses??0}</td><td>${state(x.suspendedAt?'SUSPENDED':'ACTIVE')}</td><td><button class="button secondary sm" onclick="suspendUser('${x.id}',${!x.suspendedAt})">${x.suspendedAt?'Unsuspend':'Suspend'}</button></td></tr>`).join('')}catch(e){empty('userRows',6,e.message)}}
-
-async function loadAllBackups(){try{const v=await api('/api/vps');let all=[];for(const vps of v){try{const b=await api(`/api/vps/${vps.id}/backups`);b.forEach(x=>all.push({...x,vpsName:vps.name}))}catch{}}all.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));if(!all.length)return empty('backupRows',6,'No backups.');$('backupRows').innerHTML=all.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.vpsName)}</td><td>${state(x.status)}</td><td>${x.sizeBytes?(x.sizeBytes/1048576).toFixed(1)+' MB':'—'}</td><td>${new Date(x.createdAt).toLocaleString()}</td><td><button class="button secondary sm" onclick="deleteBackup('${x.vpsId}','${x.id}')">Delete</button></td></tr>`).join('')}catch(e){empty('backupRows',6,e.message)}}
-
-async function loadAllSnapshots(){try{const v=await api('/api/vps');let all=[];for(const vps of v){try{const s=await api(`/api/vps/${vps.id}/snapshots`);s.forEach(x=>all.push({...x,vpsName:vps.name}))}catch{}}all.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));if(!all.length)return empty('snapshotRows',5,'No snapshots.');$('snapshotRows').innerHTML=all.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.vpsName)}</td><td>${x.sizeBytes?(x.sizeBytes/1048576).toFixed(1)+' MB':'—'}</td><td>${new Date(x.createdAt).toLocaleString()}</td><td><button class="button secondary sm" onclick="deleteSnapshot('${x.vpsId}','${x.id}')">Delete</button></td></tr>`).join('')}catch(e){empty('snapshotRows',5,e.message)}}
-
-async function loadAudit(){try{const a=await api('/api/audit');if(!a.length)return empty('auditRows',6,'No events.');$('auditRows').innerHTML=a.map(x=>`<tr><td>${esc(x.action)}</td><td>${esc(x.actor?.username)}</td><td class="mono">${esc(x.target)}</td><td>${esc(x.result)}</td><td class="mono">${esc(x.ip)}</td><td>${new Date(x.createdAt).toLocaleString()}</td></tr>`).join('')}catch(e){empty('auditRows',6,e.message)}}
-
-async function loadSettings(){try{const a=await api('/api/settings');if(!a.length)return empty('settingRows',3,'No settings.');$('settingRows').innerHTML=a.map(x=>`<tr><td class="mono">${esc(x.key)}</td><td class="mono">${esc(JSON.stringify(x.value))}</td><td><button class="button secondary sm" onclick="deleteSetting('${x.key}')">Delete</button></td></tr>`).join('')}catch(e){empty('settingRows',3,e.message)}}
-
-async function loadNotifications(){try{const n=await api('/api/notifications');if(!n.length){$('notifList').innerHTML='<div class="empty">No notifications</div>';return}$('notifList').innerHTML=n.map(x=>`<div class="item" style="padding:12px 0;border-bottom:1px solid var(--border)"><div style="display:flex;justify-content:space-between"><b>${esc(x.title)}</b><span style="color:var(--muted);font-size:11px">${new Date(x.createdAt).toLocaleString()}</span></div><p style="color:var(--muted);margin-top:4px;font-size:13px">${esc(x.body)}</p>${!x.readAt?`<button class="button secondary sm" style="margin-top:6px" onclick="markRead('${x.id}')">Mark Read</button>`:''}</div>`).join('')}catch{}}
-
-async function loadNotifCount(){try{const r=await api('/api/notifications/unread-count');const el=$('notifCount');if(r.count>0){el.textContent=r.count;el.style.display='grid'}else{el.style.display='none'}}catch{}}
-
-function showNotifications(){navigate('notifications-panel')}
-async function markRead(id){try{await api(`/api/notifications/${id}/read`,{method:'PUT'});loadNotifications();loadNotifCount()}catch(e){toast(e.message)}}
-async function markAllRead(){try{await api('/api/notifications/read-all',{method:'PUT'});loadNotifications();loadNotifCount()}catch(e){toast(e.message)}}
-
-async function loadUiVersions(){try{const v=await api('/api/ui/versions');$('uiVersions').innerHTML=v.length?`<h3 style="margin-top:15px">Saved Versions</h3>`+v.map(x=>`<div class="item" style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><span>${new Date(x.createdAt).toLocaleString()} ${x.active?'<span class="badge ok">ACTIVE</span>':''}</span><div><button class="button secondary sm" onclick="previewUiConfig('${x.id}')">Preview</button>${!x.active?`<button class="button sm" onclick="activateUi('${x.id}')">Activate</button>`:''}<button class="button danger sm" onclick="deleteUi('${x.id}')">Delete</button></div></div>`).join(''):''}catch{}}
-
-async function vpsAction(id,action){if(action==='delete'&&!confirm('Delete this VPS permanently?'))return;try{await api(`/api/vps/${id}/actions`,{method:'POST',body:JSON.stringify({action})});toast(`${action} queued`);if(currentVpsId===id)setTimeout(()=>viewVps(id),1000);else loadVps();loadTasks()}catch(e){toast(e.message)}}
-
-async function updateVps(id,form){const d=Object.fromEntries(new FormData(form));try{await api(`/api/vps/${id}`,{method:'PUT',body:JSON.stringify(d)});toast('VPS updated');viewVps(id)}catch(e){toast(e.message)}}
-
-async function reserveIp(id,reserved){try{await api(`/api/ipv4/${id}/reservation`,{method:'POST',body:JSON.stringify({reserved})});loadIps()}catch(e){toast(e.message)}}
-async function suspendUser(id,suspended){if(!confirm(`${suspended?'Suspend':'Unsuspend'}?`))return;try{await api(`/api/users/${id}/suspension`,{method:'POST',body:JSON.stringify({suspended})});loadUsers()}catch(e){toast(e.message)}}
-async function toggleMaintenance(id,enabled){try{await api(`/api/nodes/${id}/maintenance`,{method:'POST',body:JSON.stringify({enabled})});loadNodes()}catch(e){toast(e.message)}}
-async function cancelTask(id){try{await api(`/api/tasks/${id}/cancel`,{method:'POST'});loadTasks();toast('Task cancelled')}catch(e){toast(e.message)}}
-async function createSnapshot(vpsId){const name=prompt('Snapshot name:');if(!name)return;try{await api(`/api/vps/${vpsId}/snapshots`,{method:'POST',body:JSON.stringify({name})});toast('Snapshot queued');loadVpsSnapshots(vpsId)}catch(e){toast(e.message)}}
-async function deleteSnapshot(vpsId,snapshotId){if(!confirm('Delete snapshot?'))return;try{await api(`/api/vps/${vpsId}/snapshots/${snapshotId}`,{method:'DELETE'});toast('Snapshot delete queued');loadVpsSnapshots(vpsId)}catch(e){toast(e.message)}}
-async function createBackup(vpsId){const name=prompt('Backup name:');if(!name)return;try{await api(`/api/vps/${vpsId}/backups`,{method:'POST',body:JSON.stringify({name})});toast('Backup queued');loadVpsBackups(vpsId)}catch(e){toast(e.message)}}
-async function deleteBackup(vpsId,backupId){if(!confirm('Delete backup?'))return;try{await api(`/api/vps/${vpsId}/backups/${backupId}`,{method:'DELETE'});toast('Backup delete queued');loadVpsBackups(vpsId)}catch(e){toast(e.message)}}
-async function deleteImage(id){if(!confirm('Delete image?'))return;try{await api(`/api/os-images/${id}`,{method:'DELETE'});loadImages()}catch(e){toast(e.message)}}
-async function deletePlan(id){if(!confirm('Delete plan?'))return;try{await api(`/api/plans/${id}`,{method:'DELETE'});loadPlans()}catch(e){toast(e.message)}}
-async function deleteSetting(key){if(!confirm('Delete setting?'))return;try{await api(`/api/settings/${key}`,{method:'DELETE'});loadSettings()}catch(e){toast(e.message)}}
-
-async function applyUiConfig(){if(!pendingUiConfig)return;try{await api('/api/ui/versions',{method:'POST',body:JSON.stringify({config:pendingUiConfig})});toast('UI config applied');pendingUiConfig=null;$('uiPreview').style.display='none';loadUiVersions()}catch(e){toast(e.message)}}
-async function activateUi(id){try{await api(`/api/ui/versions/${id}/activate`,{method:'PUT'});toast('Activated');loadUiVersions()}catch(e){toast(e.message)}}
-async function deleteUi(id){if(!confirm('Delete UI version?'))return;try{await api(`/api/ui/versions/${id}`,{method:'DELETE'});loadUiVersions()}catch(e){toast(e.message)}}
-
-const forms={
-  node:{title:'Add Node',path:'/api/nodes',text:'The enrollment token is shown after creation.',fields:'<label>Node name<input name="name" pattern="[a-z0-9-]{2,32}" required></label><label>Address<input name="address" required></label>'},
-  ip:{title:'Add IPv4',path:'/api/ipv4',text:'Add addresses routed to a node.',fields:'<label>Address<input name="address" required></label><label>Gateway<input name="gateway"></label><label>CIDR<input name="cidr" type="number" value="32" min="8" max="32"></label><label>Node ID<input name="nodeId" required></label>'},
-  image:{title:'Add OS Image',path:'/api/os-images',text:'LXD image alias for provisioning.',fields:'<label>Name<input name="name" placeholder="Ubuntu 24.04" required></label><label>Distribution<input name="distribution" value="ubuntu" required></label><label>Release<input name="release" value="24.04" required></label><label>Architecture<select name="architecture"><option>amd64</option><option>arm64</option></select></label><label>Image alias<input name="imageAlias" value="ubuntu:24.04" required></label>'},
-  plan:{title:'Create Plan',path:'/api/plans',text:'Resource limits.',fields:'<label>Name<input name="name" required></label><label>vCPU<input name="cpu" type="number" min="1" value="1"></label><label>RAM MiB<input name="ramMiB" type="number" min="512" value="2048"></label><label>Disk GiB<input name="diskGiB" type="number" min="5" value="25"></label><label>VPS Limit<input name="vpsLimit" type="number" min="1" value="1"></label><div class="checks">${['ipv4','ipv6','rdp','sshx','tailscale','backups','snapshots'].map(x=>`<label><input type="checkbox" name="${x}">${x}</label>`).join('')}</div>'},
-  user:{title:'Create User',path:'/api/users',text:'Passwords: Argon2id.',fields:'<label>Email<input name="email" type="email" required></label><label>Username<input name="username" required></label><label>Password<input name="password" type="password" minlength="12" required></label><label>Role<select name="role"><option value="USER">User</option><option value="SUPPORT">Support</option><option value="NODE_MANAGER">Node Manager</option><option value="ADMIN">Admin</option></select></label>'},
-  setting:{title:'Add Setting',path:'/api/settings',text:'Non-secret config only.',fields:'<label>Key<input name="key" required></label><label>Value<input name="value" required></label>'},
+$('loginForm').onsubmit=async e=>{
+e.preventDefault();
+const fd=new FormData(e.target);
+$('loginBtn').disabled=true;
+$('loginError').className='login-error';
+try{
+await api('/api/auth/login',{method:'POST',body:JSON.stringify({email:fd.get('email'),password:fd.get('password'})});
+currentUser=await api('/api/me');
+showApp();
+}catch(err){
+$('loginError').textContent=err.message;
+$('loginError').className='login-error show';
+$('loginBtn').disabled=false;
+}
 };
-function openForm(kind){const f=forms[kind];$('formTitle').textContent=f.title;$('formText').textContent=f.text;$('form').innerHTML=f.fields;$('modal').classList.add('show');$('form').onsubmit=async e=>{e.preventDefault();let d=Object.fromEntries(new FormData(e.target));for(const k of ['cpu','ramMiB','diskGiB','vpsLimit','cidr'])if(k in d)d[k]=Number(d[k]);for(const k of ['ipv4','ipv6','rdp','sshx','tailscale','backups','snapshots'])d[k]=d[k]==='on';try{const r=await api(f.path,{method:'POST',body:JSON.stringify(d)});closeForm();toast(r.enrollmentToken?'Token: '+r.enrollmentToken:'Saved');({ip:'ips',image:'images',node:'nodes',user:'users',plan:'plans',setting:'settings'}[kind]||'dashboard')| navigate}catch(e){toast(e.message)}}}
-function closeForm(){$('modal').classList.remove('show')}
 
-$('createVpsForm').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));d.cpu=Number(d.cpu);d.ramMiB=Number(d.ramMiB);d.diskGiB=Number(d.diskGiB);const days=Number(d.expiresDays);delete d.expiresDays;if(days>0)d.expiresAt=new Date(Date.now()+days*86400000).toISOString();else delete d.expiresAt;for(const k of ['ipv4','rdp','sshx','tailscale'])d[k]=d[k]==='on';try{const r=await api('/api/vps',{method:'POST',body:JSON.stringify(d)});toast('VPS creating...');navigate('vps');loadTasks()}catch(e){toast(e.message)}};
+$('registerForm').onsubmit=async e=>{
+e.preventDefault();
+const fd=new FormData(e.target);
+try{
+await api('/api/auth/register',{method:'POST',body:JSON.stringify({username:fd.get('username'),email:fd.get('email'),password:fd.get('password'})});
+currentUser=await api('/api/me');
+showApp();
+}catch(err){
+$('registerError').textContent=err.message;
+$('registerError').className='login-error show';
+}
+};
 
-$('uiGenForm').onsubmit=async e=>{e.preventDefault();const fd=new FormData(e.target);try{toast('Generating...');const r=await api('/api/ui/generate',{method:'POST',body:JSON.stringify({prompt:fd.get('prompt')})});pendingUiConfig=r.config;$('uiPreviewJson').textContent=JSON.stringify(r.config,null,2);$('uiPreview').style.display='block'}catch(e){toast(e.message)}};
+// Sidebar
+const isAdmin=()=>currentUser&&(currentUser.role==='ADMIN'||currentUser.role==='SUPER_ADMIN');
+const isSupport=()=>currentUser&&(currentUser.role==='SUPPORT'||currentUser.role==='NODE_MANAGER'||isAdmin());
 
-document.querySelectorAll('#vpsTabs .tab').forEach(tab=>{tab.onclick=()=>{document.querySelectorAll('#vpsTabs .tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));tab.classList.add('active');$('tab-'+tab.dataset.tab)?.classList.add('active')}});
+const adminNav=[
+{section:'OVERVIEW',items:[{id:'dashboard',icon:'📊',label:'Dashboard'}]},
+{section:'COMPUTE',items:[{id:'vps',icon:'🖥️',label:'All VPS',badge:'vps'},{id:'create-vps',icon:'➕',label:'Create VPS'},{id:'tasks',icon:'⚡',label:'Tasks',badge:'tasks'}]},
+{section:'INFRASTRUCTURE',items:[{id:'nodes',icon:'🌐',label:'Nodes'},{id:'ips',icon:'🔗',label:'IPv4 Pool'},{id:'images',icon:'💿',label:'OS Images'}]},
+{section:'HOSTING',items:[{id:'plans',icon:'📋',label:'Plans'},{id:'backups',icon:'💾',label:'Backups'},{id:'snapshots',icon:'📸',label:'Snapshots'}]},
+{section:'MANAGEMENT',items:[{id:'users',icon:'👥',label:'Users'},{id:'audit',icon:'📝',label:'Audit Log'},{id:'settings',icon:'⚙️',label:'Settings'}]},
+];
 
-async function init(){try{currentUser=await api('/api/me');$('avatar').textContent=currentUser.username.slice(0,2).toUpperCase();await loadDash();loadNotifCount();setInterval(loadNotifCount,60000)}catch(e){$('subtitle').textContent='Authentication required.'}}
-init();
+const userNav=[
+{section:'MAIN',items:[{id:'dashboard',icon:'📊',label:'Dashboard'}]},
+{section:'COMPUTE',items:[{id:'my-vps',icon:'🖥️',label:'My VPS'},{id:'create-vps',icon:'➕',label:'Create VPS'}]},
+{section:'ACCOUNT',items:[{id:'profile',icon:'👤',label:'Profile'},{id:'notifications',icon:'🔔',label:'Notifications',badge:'notif'}]},
+];
+
+function renderSidebar(){
+const nav=isAdmin()?adminNav:userNav;
+$('sidebarNav').innerHTML=nav.map(s=>`<div class="sidebar-section">${s.section}</div>`+s.items.map(i=>`<div class="sidebar-item${currentView===i.id?' active':''}" onclick="navigate('${i.id}')"><span class="icon">${i.icon}</span>${i.label}${i.badge?`<span class="badge" id="badge-${i.badge}"></span>`:''}</div>`)).join('');
+$('sidebarUser').innerHTML=`
+<div class="sidebar-avatar">${currentUser.username.slice(0,2).toUpperCase()}</div>
+<div class="sidebar-user-info"><div class="sidebar-user-name">${esc(currentUser.username)}</div><div class="sidebar-user-role">${currentUser.role}</div></div>
+<div class="sidebar-logout" onclick="logout()" title="Logout">⏻</div>
+`;
+}
+
+async function logout(){
+try{await api('/api/auth/logout',{method:'POST'})}catch{}
+currentUser=null;
+showLogin();
+}
+
+// Navigation
+async function navigate(view){
+currentView=view;
+renderSidebar();
+const c=$('mainContent');
+c.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div>';
+try{
+if(view==='dashboard')await renderDashboard(c);
+else if(view==='vps'&&isAdmin())await renderAllVps(c);
+else if(view==='my-vps')await renderMyVps(c);
+else if(view==='create-vps')renderCreateVps(c);
+else if(view==='tasks')await renderTasks(c);
+else if(view==='nodes'&&isAdmin())await renderNodes(c);
+else if(view==='ips'&&isAdmin())await renderIps(c);
+else if(view==='images'&&isAdmin())await renderImages(c);
+else if(view==='plans'&&isAdmin())await renderPlans(c);
+else if(view==='users'&&isAdmin())await renderUsers(c);
+else if(view==='audit'&&isAdmin())await renderAudit(c);
+else if(view==='settings'&&isAdmin())await renderSettings(c);
+else if(view==='backups'&&isAdmin())await renderAllBackups(c);
+else if(view==='snapshots'&&isAdmin())await renderAllSnapshots(c);
+else if(view==='profile')renderProfile(c);
+else if(view==='notifications')await renderNotifications(c);
+else if(view.startsWith('vps-detail:'))await renderVpsDetail(c,view.split(':')[1]);
+else c.innerHTML='<div class="empty-state"><div class="empty-state-icon">🔒</div><h3>Access Denied</h3><p>You don\'t have permission to view this page.</p></div>';
+}catch(err){c.innerHTML=`<div class="empty-state"><div class="empty-state-icon">⚠️</div><h3>Error</h3><p>${esc(err.message)}</p></div>`}
+}
+
+// Dashboard
+async function renderDashboard(c){
+const d=await api('/api/dashboard');
+const v=await api('/api/vps');
+c.innerHTML=`
+<div class="page-header"><h1>Dashboard</h1><p>Welcome back, ${esc(currentUser.username)}</p></div>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-icon purple">🖥️</div><div class="stat-value">${d.total??0}</div><div class="stat-label">Total VPS</div></div>
+<div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-value">${d.running??0}</div><div class="stat-label">Running</div></div>
+<div class="stat-card"><div class="stat-icon red">⛔</div><div class="stat-value">${d.stopped??0}</div><div class="stat-label">Stopped</div></div>
+<div class="stat-card"><div class="stat-icon yellow">⏳</div><div class="stat-value">${d.expiringSoon??0}</div><div class="stat-label">Expiring Soon</div></div>
+${isAdmin()?`
+<div class="stat-card"><div class="stat-icon blue">🌐</div><div class="stat-value">${d.nodesOnline??0}</div><div class="stat-label">Nodes Online</div></div>
+<div class="stat-card"><div class="stat-icon purple">👥</div><div class="stat-value">${d.usersTotal??0}</div><div class="stat-label">Users</div></div>
+`:''}
+</div>
+<div class="card">
+<div class="card-header"><h2>${isAdmin()?'Recent VPS':'Your VPS'}</h2><button class="btn btn-primary btn-sm" onclick="navigate('create-vps')">+ Create</button></div>
+<div class="card-body">${v.length?`<table class="table"><thead><tr><th>Name</th><th>Status</th><th>Node</th><th>IP</th><th>Resources</th></tr></thead><tbody>${v.slice(0,8).map(x=>`<tr onclick="navigate('vps-detail:${x.id}')" style="cursor:pointer"><td><strong>${esc(x.name)}</strong><br><span style="color:var(--text-muted);font-size:11px">${esc(x.hostname)}</span></td><td>${statusBadge(x.status)}</td><td>${esc(x.node?.name)}</td><td style="font-family:monospace;font-size:12px">${esc(x.ip?.address)??'—'}</td><td>${x.cpu}C · ${Math.round(x.ramMiB/1024)}G · ${x.diskGiB}G</td></tr>`).join('')}</tbody></table>`:`<div class="empty-state"><div class="empty-state-icon">🖥️</div><h3>No VPS instances</h3><p>Create your first VPS to get started</p></div>`}</div>
+</div>`;
+}
+
+// VPS List (Admin)
+async function renderAllVps(c){
+const v=await api('/api/vps');
+c.innerHTML=`
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:start"><div><h1>All VPS</h1><p>Manage all virtual private servers</p></div><button class="btn btn-primary" onclick="navigate('create-vps')">+ Create VPS</button></div>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-value">${v.filter(x=>x.status==='RUNNING').length}</div><div class="stat-label">Running</div></div>
+<div class="stat-card"><div class="stat-icon red">⛔</div><div class="stat-value">${v.filter(x=>x.status==='STOPPED').length}</div><div class="stat-label">Stopped</div></div>
+<div class="stat-card"><div class="stat-icon yellow">⏳</div><div class="stat-value">${v.filter(x=>x.status==='PROVISIONING').length}</div><div class="stat-label">Provisioning</div></div>
+<div class="stat-card"><div class="stat-icon purple">📊</div><div class="stat-value">${v.length}</div><div class="stat-label">Total</div></div>
+</div>
+<div class="card"><div class="card-body">
+${v.length?`<table class="table"><thead><tr><th>Name</th><th>Status</th><th>Node</th><th>IP</th><th>Resources</th><th></th></tr></thead><tbody>${v.map(x=>`<tr><td onclick="navigate('vps-detail:${x.id}')" style="cursor:pointer"><strong>${esc(x.name)}</strong><br><span style="color:var(--text-muted);font-size:11px">${esc(x.hostname)}</span></td><td>${statusBadge(x.status)}</td><td>${esc(x.node?.name)}</td><td style="font-family:monospace;font-size:12px">${esc(x.ip?.address)??'—'}</td><td>${x.cpu}C · ${Math.round(x.ramMiB/1024)}G · ${x.diskGiB}G</td><td><button class="btn btn-secondary btn-sm" onclick="vpsAction('${x.id}','restart')">Restart</button></td></tr>`).join('')}</tbody></table>`:`<div class="empty-state"><div class="empty-state-icon">🖥️</div><h3>No VPS found</h3></div>`}</div></div>`;
+}
+
+// My VPS (User)
+async function renderMyVps(c){
+const v=await api('/api/vps');
+c.innerHTML=`
+<div class="page-header"><h1>My VPS</h1><p>Your virtual private servers</p></div>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-value">${v.filter(x=>x.status==='RUNNING').length}</div><div class="stat-label">Running</div></div>
+<div class="stat-card"><div class="stat-icon red">⛔</div><div class="stat-value">${v.filter(x=>x.status==='STOPPED').length}</div><div class="stat-label">Stopped</div></div>
+<div class="stat-card"><div class="stat-icon purple">📊</div><div class="stat-value">${v.length}</div><div class="stat-label">Total</div></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px">
+${v.length?v.map(x=>`
+<div class="vps-card" onclick="navigate('vps-detail:${x.id}')">
+<div class="vps-card-header">
+<div class="vps-card-name">${esc(x.name)}</div>
+${statusBadge(x.status)}
+</div>
+<div class="vps-card-specs">
+<div class="vps-card-spec"><div class="vps-card-spec-label">CPU</div><div class="vps-card-spec-value">${x.cpu} vCPU</div></div>
+<div class="vps-card-spec"><div class="vps-card-spec-label">RAM</div><div class="vps-card-spec-value">${Math.round(x.ramMiB/1024)} GB</div></div>
+<div class="vps-card-spec"><div class="vps-card-spec-label">Disk</div><div class="vps-card-spec-value">${x.diskGiB} GB</div></div>
+</div>
+<div class="vps-card-footer">
+<div class="vps-card-ip">${esc(x.ip?.address)??'No IP'}</div>
+<div style="display:flex;gap:6px">
+<button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();vpsAction('${x.id}','restart')">Restart</button>
+</div>
+</div>
+</div>`).join(''):'<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">🖥️</div><h3>No VPS yet</h3><p>Create your first VPS to get started</p><button class="btn btn-primary" style="margin-top:16px" onclick="navigate(\'create-vps\')">Create VPS</button></div>'}
+</div>`;
+}
+
+// VPS Detail
+async function renderVpsDetail(c,id){
+const v=await api(`/api/vps/${id}`);
+c.innerHTML=`
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:start">
+<div><h1>${esc(v.name)}</h1><p>${esc(v.hostname)} · ${esc(v.node?.name)}</p></div>
+<div style="display:flex;gap:8px">
+<button class="btn btn-secondary" onclick="navigate('${isAdmin()?'vps':'my-vps'}')">← Back</button>
+${v.status==='STOPPED'?`<button class="btn btn-primary" onclick="vpsAction('${v.id}','start')">Start</button>`:''}
+${v.status==='RUNNING'?`<button class="btn btn-secondary" onclick="vpsAction('${v.id}','stop')">Stop</button>`:''}
+<button class="btn btn-danger btn-sm" onclick="vpsAction('${v.id}','delete')">Delete</button>
+</div>
+</div>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-icon purple">📊</div><div class="stat-value">${statusBadge(v.status)}</div><div class="stat-label">Status</div></div>
+<div class="stat-card"><div class="stat-icon blue">⚡</div><div class="stat-value">${v.cpu}</div><div class="stat-label">vCPU</div></div>
+<div class="stat-card"><div class="stat-icon green">💾</div><div class="stat-value">${Math.round(v.ramMiB/1024)} GB</div><div class="stat-label">RAM</div></div>
+<div class="stat-card"><div class="stat-icon yellow">💿</div><div class="stat-value">${v.diskGiB} GB</div><div class="stat-label">Disk</div></div>
+</div>
+<div class="grid-2">
+<div class="card"><div class="card-header"><h2>Details</h2></div><div class="card-body padded">
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-muted);font-size:13px">OS</span><span style="font-size:13px;font-weight:500">${esc(v.imageAlias)}</span></div>
+<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-muted);font-size:13px">Node</span><span style="font-size:13px;font-weight:500">${esc(v.node?.name)}</span></div>
+<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-muted);font-size:13px">LXD Name</span><span style="font-size:13px;font-weight:500;font-family:monospace">${esc(v.lxdName)}</span></div>
+<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-muted);font-size:13px">Plan</span><span style="font-size:13px;font-weight:500">${esc(v.plan?.name)??'Custom'}</span></div>
+<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-muted);font-size:13px">Created</span><span style="font-size:13px;font-weight:500">${new Date(v.createdAt).toLocaleDateString()}</span></div>
+<div style="display:flex;justify-content:space-between;padding:8px 0"><span style="color:var(--text-muted);font-size:13px">Expires</span><span style="font-size:13px;font-weight:500">${v.expiresAt?new Date(v.expiresAt).toLocaleDateString():'Never'}</span></div>
+</div>
+</div></div>
+<div class="card"><div class="card-header"><h2>Network</h2></div><div class="card-body padded">
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-muted);font-size:13px">IPv4</span><span style="font-size:13px;font-weight:500;font-family:monospace">${esc(v.ip?.address)??'None'}</span></div>
+<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-muted);font-size:13px">IPv6</span><span style="font-size:13px;font-weight:500;font-family:monospace">${esc(v.ipv6)??'Disabled'}</span></div>
+<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-muted);font-size:13px">Tailscale</span><span style="font-size:13px;font-weight:500;font-family:monospace">${esc(v.tailscaleIp)??'Not set'}</span></div>
+<div style="display:flex;justify-content:space-between;padding:8px 0"><span style="color:var(--text-muted);font-size:13px">RDP</span><span style="font-size:13px;font-weight:500">${v.rdp?.enabled?`<span class="badge badge-running"><span class="badge-dot"></span>${v.rdp.provider}</span>`:'<span class="badge badge-stopped">Disabled</span>'}</span></div>
+</div>
+</div></div>
+</div>
+<div class="card" style="margin-top:16px"><div class="card-header"><h2>Actions</h2></div><div class="card-body padded" style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn btn-primary" onclick="vpsAction('${v.id}','start')">▶ Start</button>
+<button class="btn btn-secondary" onclick="vpsAction('${v.id}','stop')">⏹ Stop</button>
+<button class="btn btn-secondary" onclick="vpsAction('${v.id}','restart')">🔄 Restart</button>
+${isAdmin()?`
+<button class="btn btn-secondary" onclick="vpsAction('${v.id}','rdp-enable')">🖥️ Enable RDP</button>
+<button class="btn btn-danger" onclick="vpsAction('${v.id}','delete')">🗑 Delete</button>
+`:''}
+</div></div>`;
+}
+
+// Create VPS
+function renderCreateVps(c){
+c.innerHTML=`
+<div class="page-header"><h1>Create VPS</h1><p>Deploy a new LXD system container</p></div>
+<div class="card" style="max-width:600px"><div class="card-body padded">
+<form class="modal-form" id="createVpsForm">
+<div class="form-group"><label>VPS Name</label><input name="name" placeholder="My Server" required pattern="^[a-zA-Z0-9 _-]{1,64}$"></div>
+<div class="form-group"><label>Hostname</label><input name="hostname" placeholder="my-server" required pattern="^[a-zA-Z0-9-]{1,63}$"></div>
+${isAdmin()?'<div class="form-group"><label>User ID</label><input name="userId" placeholder="User CUID" required></div>':'<input type="hidden" name="userId" value="'+currentUser.id+'">'}
+<div class="form-group"><label>Operating System</label><select name="imageAlias" id="osSelect"><option value="ubuntu:24.04">Ubuntu 24.04</option><option value="ubuntu:22.04">Ubuntu 22.04</option><option value="debian:12">Debian 12</option></select></div>
+<div class="form-group"><label>CPU (vCPU)</label><input name="cpu" type="number" min="1" max="64" value="1"></div>
+<div class="form-group"><label>RAM (MB)</label><input name="ramMiB" type="number" min="512" max="524288" value="2048"></div>
+<div class="form-group"><label>Disk (GB)</label><input name="diskGiB" type="number" min="5" max="4096" value="25"></div>
+<div class="form-group"><label>Expiration (days, 0=never)</label><input name="expiresDays" type="number" min="0" value="30"></div>
+<div style="display:flex;gap:16px;margin-top:8px">
+<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" name="ipv4" checked> IPv4</label>
+<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" name="sshx" checked> SSHX</label>
+<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" name="rdp"> RDP</label>
+</div>
+<button type="submit" class="btn btn-primary" style="margin-top:16px;width:100%">Create VPS</button>
+</form>
+</div></div>`;
+$('createVpsForm').onsubmit=async e=>{
+e.preventDefault();
+const fd=new FormData(e.target);
+const d=Object.fromEntries(fd);
+d.cpu=Number(d.cpu);d.ramMiB=Number(d.ramMiB);d.diskGiB=Number(d.diskGiB);
+const days=Number(d.expiresDays);delete d.expiresDays;
+if(days>0)d.expiresAt=new Date(Date.now()+days*86400000).toISOString();else delete d.expiresAt;
+for(const k of['ipv4','rdp','sshx','tailscale'])d[k]=d[k]==='on';
+try{await api('/api/vps',{method:'POST',body:JSON.stringify(d)});toast('VPS creating...');navigate('my-vps')}catch(err){toast(err.message,'error')}
+};
+}
+
+// Tasks
+async function renderTasks(c){
+const t=await api('/api/tasks');
+c.innerHTML=`
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:start"><div><h1>Tasks</h1><p>Background operations</p></div><button class="btn btn-secondary" onclick="navigate('tasks')">Refresh</button></div>
+<div class="card"><div class="card-body">
+${t.length?`<table class="table"><thead><tr><th>Task</th><th>VPS</th><th>Status</th><th>Progress</th><th>Created</th></tr></thead><tbody>${t.map(x=>`<tr><td style="font-weight:500">${esc(x.type)}</td><td>${esc(x.vps?.name)??'—'}</td><td>${statusBadge(x.status)}</td><td><div class="progress" style="width:100px"><div class="progress-fill purple" style="width:${x.progress}%"></div></div><span style="font-size:11px;color:var(--text-muted)">${x.progress}%</span></td><td style="font-size:12px;color:var(--text-muted)">${new Date(x.createdAt).toLocaleString()}</td></tr>`).join('')}</tbody></table>`:`<div class="empty-state"><div class="empty-state-icon">⚡</div><h3>No tasks</h3></div>`}</div></div>`;
+}
+
+// Nodes
+async function renderNodes(c){
+const n=await api('/api/nodes');
+c.innerHTML=`
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:start"><div><h1>Nodes</h1><p>LXD host agents</p></div><button class="btn btn-primary" onclick="openModal('node')">+ Add Node</button></div>
+<div class="card"><div class="card-body">
+${n.length?`<table class="table"><thead><tr><th>Node</th><th>Address</th><th>Status</th><th>LXD</th><th>VPS</th><th></th></tr></thead><tbody>${n.map(x=>`<tr><td><strong>${esc(x.name)}</strong></td><td style="font-family:monospace;font-size:12px">${esc(x.address)}</td><td>${statusBadge(x.status)}</td><td>${esc(x.lxdVersion)??'—'}</td><td>${x._count?.vpses??0}</td><td><button class="btn btn-secondary btn-sm" onclick="toggleMaintenance('${x.id}',${x.status!=='MAINTENANCE'})">${x.status==='MAINTENANCE'?'Online':'Maintenance'}</button></td></tr>`).join('')}</tbody></table>`:`<div class="empty-state"><div class="empty-state-icon">🌐</div><h3>No nodes</h3><p>Add an LXD node to start creating VPS instances</p></div>`}</div></div>`;
+}
+
+// IPv4
+async function renderIps(c){
+const a=await api('/api/ipv4');
+c.innerHTML=`
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:start"><div><h1>IPv4 Pool</h1><p>Public address inventory</p></div><button class="btn btn-primary" onclick="openModal('ip')">+ Add IP</button></div>
+<div class="card"><div class="card-body">
+${a.length?`<table class="table"><thead><tr><th>Address</th><th>Node</th><th>Assigned VPS</th><th>Status</th><th></th></tr></thead><tbody>${a.map(x=>`<tr><td style="font-family:monospace">${esc(x.address)}/${x.cidr}</td><td>${esc(x.node?.name)}</td><td>${esc(x.vps?.name)??'—'}</td><td>${statusBadge(x.status)}</td><td>${x.status!=='ASSIGNED'?`<button class="btn btn-secondary btn-sm" onclick="reserveIp('${x.id}',${x.status!=='RESERVED'})">${x.status==='RESERVED'?'Release':'Reserve'}</button>`:''}</td></tr>`).join('')}</tbody></table>`:`<div class="empty-state"><div class="empty-state-icon">🔗</div><h3>No IPs</h3></div>`}</div></div>`;
+}
+
+// Images
+async function renderImages(c){
+const a=await api('/api/os-images');
+c.innerHTML=`
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:start"><div><h1>OS Images</h1><p>LXD image catalog</p></div><button class="btn btn-primary" onclick="openModal('image')">+ Add Image</button></div>
+<div class="card"><div class="card-body">
+${a.length?`<table class="table"><thead><tr><th>Name</th><th>Distribution</th><th>Release</th><th>Arch</th><th>Alias</th><th>Status</th></tr></thead><tbody>${a.map(x=>`<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.distribution)}</td><td>${esc(x.release)}</td><td>${esc(x.architecture)}</td><td style="font-family:monospace;font-size:12px">${esc(x.imageAlias)}</td><td>${x.enabled?'<span class="badge badge-online"><span class="badge-dot"></span>Enabled</span>':'<span class="badge badge-stopped">Disabled</span>'}</td></tr>`).join('')}</tbody></table>`:`<div class="empty-state"><div class="empty-state-icon">💿</div><h3>No images</h3></div>`}</div></div>`;
+}
+
+// Plans
+async function renderPlans(c){
+const a=await api('/api/plans');
+c.innerHTML=`
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:start"><div><h1>Plans</h1><p>Resource entitlements</p></div><button class="btn btn-primary" onclick="openModal('plan')">+ Create Plan</button></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
+${a.map(x=>`
+<div class="card"><div class="card-body padded">
+<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px"><h2 style="font-size:18px;font-weight:700">${esc(x.name)}</h2><button class="btn btn-danger btn-sm" onclick="deletePlan('${x.id}')">Delete</button></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+<div class="vps-card-spec"><div class="vps-card-spec-label">CPU</div><div class="vps-card-spec-value">${x.cpu} vCPU</div></div>
+<div class="vps-card-spec"><div class="vps-card-spec-label">RAM</div><div class="vps-card-spec-value">${Math.round(x.ramMiB/1024)} GB</div></div>
+<div class="vps-card-spec"><div class="vps-card-spec-label">Disk</div><div class="vps-card-spec-value">${x.diskGiB} GB</div></div>
+<div class="vps-card-spec"><div class="vps-card-spec-label">VPS Limit</div><div class="vps-card-spec-value">${x.vpsLimit}</div></div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px">
+${x.ipv4?'<span class="badge badge-online">IPv4</span>':''}
+${x.rdp?'<span class="badge badge-online">RDP</span>':''}
+${x.sshx?'<span class="badge badge-online">SSHX</span>':''}
+${x.backups?'<span class="badge badge-online">Backups</span>':''}
+${x.tailscale?'<span class="badge badge-online">Tailscale</span>':''}
+</div>
+</div></div>`).join('')}
+</div>`;
+}
+
+// Users
+async function renderUsers(c){
+const a=await api('/api/users');
+c.innerHTML=`
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:start"><div><h1>Users</h1><p>Accounts and roles</p></div><button class="btn btn-primary" onclick="openModal('user')">+ Create User</button></div>
+<div class="card"><div class="card-body">
+${a.length?`<table class="table"><thead><tr><th>User</th><th>Role</th><th>VPS</th><th>Status</th><th></th></tr></thead><tbody>${a.map(x=>`<tr><td><strong>${esc(x.username)}</strong><br><span style="color:var(--text-muted);font-size:11px">${esc(x.email)}</span></td><td><span class="badge badge-online">${x.role}</span></td><td>${x._count?.vpses??0}</td><td>${x.suspendedAt?'<span class="badge badge-stopped">Suspended</span>':'<span class="badge badge-online"><span class="badge-dot"></span>Active</span>'}</td><td><button class="btn btn-secondary btn-sm" onclick="suspendUser('${x.id}',${!x.suspendedAt})">${x.suspendedAt?'Unsuspend':'Suspend'}</button></td></tr>`).join('')}</tbody></table>`:`<div class="empty-state"><div class="empty-state-icon">👥</div><h3>No users</h3></div>`}</div></div>`;
+}
+
+// Audit
+async function renderAudit(c){
+const a=await api('/api/audit');
+c.innerHTML=`
+<div class="page-header"><h1>Audit Log</h1><p>Security-relevant actions</p></div>
+<div class="card"><div class="card-body">
+${a.length?`<table class="table"><thead><tr><th>Action</th><th>Actor</th><th>Target</th><th>Result</th><th>Time</th></tr></thead><tbody>${a.map(x=>`<tr><td style="font-weight:500">${esc(x.action)}</td><td>${esc(x.actor?.username)}</td><td style="font-family:monospace;font-size:12px">${esc(x.target)}</td><td>${esc(x.result)}</td><td style="font-size:12px;color:var(--text-muted)">${new Date(x.createdAt).toLocaleString()}</td></tr>`).join('')}</tbody></table>`:`<div class="empty-state"><div class="empty-state-icon">📝</div><h3>No events</h3></div>`}</div></div>`;
+}
+
+// Settings
+async function renderSettings(c){
+const a=await api('/api/settings');
+c.innerHTML=`
+<div class="page-header"><h1>Settings</h1><p>Non-secret configuration</p></div>
+<div class="card"><div class="card-body">
+${a.length?`<table class="table"><thead><tr><th>Key</th><th>Value</th></tr></thead><tbody>${a.map(x=>`<tr><td style="font-family:monospace;font-weight:500">${esc(x.key)}</td><td style="font-family:monospace;font-size:12px">${esc(JSON.stringify(x.value))}</td></tr>`).join('')}</tbody></table>`:`<div class="empty-state"><div class="empty-state-icon">⚙️</div><h3>No settings</h3></div>`}</div></div>`;
+}
+
+// Profile
+function renderProfile(c){
+c.innerHTML=`
+<div class="page-header"><h1>Profile</h1><p>Manage your account</p></div>
+<div class="card" style="max-width:500px"><div class="card-body padded">
+<div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+<div class="sidebar-avatar" style="width:64px;height:64px;font-size:24px;border-radius:16px">${currentUser.username.slice(0,2).toUpperCase()}</div>
+<div><h2 style="font-size:18px">${esc(currentUser.username)}</h2><p style="color:var(--text-muted);font-size:13px">${esc(currentUser.email)}</p><span class="badge badge-online" style="margin-top:4px">${currentUser.role}</span></div>
+</div>
+<form class="modal-form" id="profileForm">
+<div class="form-group"><label>Username</label><input name="username" value="${esc(currentUser.username)}" required></div>
+<div class="form-group"><label>Email</label><input name="email" type="email" value="${esc(currentUser.email)}" required></div>
+<button type="submit" class="btn btn-primary" style="width:100%">Save Changes</button>
+</form>
+</div></div>
+<div class="card" style="max-width:500px;margin-top:16px"><div class="card-header"><h2>Change Password</h2></div><div class="card-body padded">
+<form class="modal-form" id="passwordForm">
+<div class="form-group"><label>Current Password</label><input name="currentPassword" type="password" required minlength="12"></div>
+<div class="form-group"><label>New Password</label><input name="newPassword" type="password" required minlength="12"></div>
+<button type="submit" class="btn btn-primary" style="width:100%">Change Password</button>
+</form>
+</div></div>`;
+$('profileForm').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));try{await api('/api/me',{method:'PUT',body:JSON.stringify(d)});currentUser=await api('/api/me');toast('Profile updated');renderSidebar();renderProfile($('mainContent'))}catch(err){toast(err.message,'error')}};
+$('passwordForm').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));try{await api('/api/me/password',{method:'PUT',body:JSON.stringify(d)});toast('Password changed');$('passwordForm').reset()}catch(err){toast(err.message,'error')}};
+}
+
+// Notifications
+async function renderNotifications(c){
+const n=await api('/api/notifications');
+c.innerHTML=`
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:start"><div><h1>Notifications</h1><p>Panel notifications</p></div><button class="btn btn-secondary" onclick="markAllRead()">Mark All Read</button></div>
+<div class="card"><div class="card-body">
+${n.length?n.map(x=>`
+<div style="padding:16px 20px;border-bottom:1px solid var(--border);${!x.readAt?'background:var(--accent-glow)':''}">
+<div style="display:flex;justify-content:space-between;align-items:start"><strong style="font-size:14px">${esc(x.title)}</strong><span style="font-size:11px;color:var(--text-muted)">${new Date(x.createdAt).toLocaleString()}</span></div>
+<p style="color:var(--text-secondary);font-size:13px;margin-top:4px">${esc(x.body)}</p>
+${!x.readAt?`<button class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="markRead('${x.id}')">Mark Read</button>`:''}
+</div>`).join(''):`<div class="empty-state"><div class="empty-state-icon">🔔</div><h3>No notifications</h3></div>`}</div></div>`;
+}
+
+// Helpers
+function statusBadge(s){
+const map={RUNNING:'badge-running',STOPPED:'badge-stopped',PROVISIONING:'badge-provisioning',SUSPENDED:'badge-suspended',ERROR:'badge-error',DELETING:'badge-stopped',ONLINE:'badge-online',OFFLINE:'badge-offline',MAINTENANCE:'badge-maintenance',QUEUED:'badge-provisioning',COMPLETED:'badge-running',FAILED:'badge-error',CANCELLED:'badge-stopped',AVAILABLE:'badge-online',ASSIGNED:'badge-running',RESERVED:'badge-maintenance',DISABLED:'badge-stopped',CONNECTED:'badge-online',INSTALLING:'badge-provisioning',RECONNECTING:'badge-maintenance',DISABLED:'badge-stopped'};
+return `<span class="badge ${map[s]||'badge-stopped'}"><span class="badge-dot"></span>${s}</span>`;
+}
+
+async function vpsAction(id,action){
+if(action==='delete'&&!confirm('Delete this VPS permanently?'))return;
+try{await api(`/api/vps/${id}/actions`,{method:'POST',body:JSON.stringify({action})});toast(`${action} queued`);setTimeout(()=>navigate(currentView),1000)}catch(err){toast(err.message,'error')}
+}
+
+async function suspendUser(id,suspended){
+if(!confirm(`${suspended?'Suspend':'Unsuspend'}?`))return;
+try{await api(`/api/users/${id}/suspension`,{method:'POST',body:JSON.stringify({suspended})});toast('Updated');navigate('users')}catch(err){toast(err.message,'error')}
+}
+
+async function toggleMaintenance(id,enabled){
+try{await api(`/api/nodes/${id}/maintenance`,{method:'POST',body:JSON.stringify({enabled})});toast('Updated');navigate('nodes')}catch(err){toast(err.message,'error')}
+}
+
+async function reserveIp(id,reserved){
+try{await api(`/api/ipv4/${id}/reservation`,{method:'POST',body:JSON.stringify({reserved})});toast('Updated');navigate('ips')}catch(err){toast(err.message,'error')}
+}
+
+async function deletePlan(id){
+if(!confirm('Delete plan?'))return;
+try{await api(`/api/plans/${id}`,{method:'DELETE'});toast('Deleted');navigate('plans')}catch(err){toast(err.message,'error')}
+}
+
+async function markRead(id){try{await api(`/api/notifications/${id}/read`,{method:'PUT'});navigate('notifications')}catch{}}
+async function markAllRead(){try{await api('/api/notifications/read-all',{method:'PUT'});navigate('notifications')}catch{}}
+
+// Modal
+const forms={
+node:{title:'Add Node',desc:'Enrollment token shown after creation.',fields:'<div class="form-group"><label>Node Name</label><input name="name" placeholder="node-01" required></div><div class="form-group"><label>Address</label><input name="address" placeholder="10.0.0.1" required></div>',path:'/api/nodes'},
+ip:{title:'Add IPv4',desc:'Add an address routed to a node.',fields:'<div class="form-group"><label>Address</label><input name="address" required></div><div class="form-group"><label>Node ID</label><input name="nodeId" required></div>',path:'/api/ipv4'},
+image:{title:'Add OS Image',desc:'LXD image alias for provisioning.',fields:'<div class="form-group"><label>Name</label><input name="name" placeholder="Ubuntu 24.04" required></div><div class="form-group"><label>Distribution</label><input name="distribution" value="ubuntu" required></div><div class="form-group"><label>Release</label><input name="release" value="24.04" required></div><div class="form-group"><label>Architecture</label><select name="architecture"><option>amd64</option><option>arm64</option></select></div><div class="form-group"><label>Image Alias</label><input name="imageAlias" value="ubuntu:24.04" required></div>',path:'/api/os-images'},
+plan:{title:'Create Plan',desc:'Define resource limits.',fields:'<div class="form-group"><label>Name</label><input name="name" required></div><div class="form-group"><label>vCPU</label><input name="cpu" type="number" min="1" value="1"></div><div class="form-group"><label>RAM (MB)</label><input name="ramMiB" type="number" min="512" value="2048"></div><div class="form-group"><label>Disk (GB)</label><input name="diskGiB" type="number" min="5" value="25"></div><div class="form-group"><label>VPS Limit</label><input name="vpsLimit" type="number" min="1" value="1"></div><div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:8px">${['ipv4','rdp','sshx','backups','tailscale'].map(x=>`<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" name="${x}"> ${x}</label>`).join('')}</div>',path:'/api/plans'},
+user:{title:'Create User',desc:'Passwords use Argon2id.',fields:'<div class="form-group"><label>Email</label><input name="email" type="email" required></div><div class="form-group"><label>Username</label><input name="username" required></div><div class="form-group"><label>Password</label><input name="password" type="password" minlength="12" required></div><div class="form-group"><label>Role</label><select name="role"><option value="USER">User</option><option value="SUPPORT">Support</option><option value="ADMIN">Admin</option></select></div>',path:'/api/users'},
+};
+
+function openModal(kind){
+const f=forms[kind];
+$('modalTitle').textContent=f.title;
+$('modalDesc').textContent=f.desc;
+$('modalForm').innerHTML=f.fields;
+$('modalOverlay').classList.add('show');
+$('modalForm').onsubmit=async e=>{
+e.preventDefault();
+const d=Object.fromEntries(new FormData(e.target));
+for(const k of['cpu','ramMiB','diskGiB','vpsLimit'])if(k in d)d[k]=Number(d[k]);
+for(const k of['ipv4','rdp','sshx','backups','tailscale'])d[k]=d[k]==='on';
+try{await api(f.path,{method:'POST',body:JSON.stringify(d)});closeModal();toast('Saved');navigate(currentView)}catch(err){toast(err.message,'error')}
+};
+}
+function closeModal(){$('modalOverlay').classList.remove('show')}
+
+// Init
+checkAuth();
 </script>
 </body>
 </html>
