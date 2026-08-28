@@ -1,21 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ╔══════════════════════════════════════════════════════════════════════════╗
-# ║                                                                        ║
-# ║   ██╗   ██╗██╗██████╗ ███████╗    ██╗      ██████╗  █████╗ ██████╗    ║
-# ║   ██║   ██║██║██╔══██╗██╔════╝    ██║     ██╔═══██╗██╔══██╗██╔══██╗   ║
-# ║   ██║   ██║██║██████╔╝█████╗      ██║     ██║   ██║███████║██████╔╝   ║
-# ║   ╚██╗ ██╔╝██║██╔══██╗██╔══╝      ██║     ██║   ██║██╔══██║██╔══██╗   ║
-# ║    ╚████╔╝ ██║██████╔╝███████╗    ███████╗╚██████╔╝██║  ██║██║  ██║   ║
-# ║     ╚═══╝  ╚═╝╚═════╝ ╚══════╝    ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ║
-# ║                                                                        ║
-# ║          THE COMPLETE VPS HOSTING CONTROL PANEL                        ║
-# ║                                                                        ║
-# ║          Made with ❤️ by SubhanPlays                                   ║
-# ║          https://github.com/Subhanplays                                ║
-# ║                                                                        ║
-# ╚══════════════════════════════════════════════════════════════════════════╝
+# =============================================================================
+# Vibe TO Vexpanel Installer
+# The Complete VPS Hosting Control Panel
+# Made by SubhanPlays
+# https://github.com/Subhanplays
+# =============================================================================
 
 # Colors
 RED='\033[0;31m'
@@ -36,21 +27,18 @@ header() { echo -e "\n${MAGENTA}${BOLD}── $1 ──${NC}\n"; }
 
 print_banner() {
     echo -e "${CYAN}"
-    echo "  ╔═══════════════════════════════════════════════════════════════╗"
-    echo "  ║                                                               ║"
-    echo "  ║     ██╗   ██╗██╗██████╗ ███████╗                             ║"
-    echo "  ║     ██║   ██║██║██╔══██╗██╔════╝                             ║"
-    echo "  ║     ██║   ██║██║██████╔╝█████╗                               ║"
-    echo "  ║     ╚██╗ ██╔╝██║██╔══██╗██╔══╝                               ║"
-    echo "  ║      ╚████╔╝ ██║██████╔╝███████╗                             ║"
-    echo "  ║       ╚═══╝  ╚═╝╚═════╝ ╚══════╝                             ║"
-    echo "  ║                                                               ║"
-    echo "  ║     ${WHITE}THE COMPLETE VPS HOSTING CONTROL PANEL${NC}${CYAN}                   ║"
-    echo "  ║                                                               ║"
-    echo "  ║     ${YELLOW}Made with ❤️  by SubhanPlays${NC}${CYAN}                             ║"
-    echo "  ║     ${WHITE}https://github.com/Subhanplays${NC}${CYAN}                          ║"
-    echo "  ║                                                               ║"
-    echo "  ╚═══════════════════════════════════════════════════════════════╝"
+    echo "  +---------------------------------------------------------------+"
+    echo "  |                                                               |"
+    echo "  |   __     __     _                _______                      |"
+    echo "  |   \ \   / /__ _| |__   ___ _ __ /__   __|__ _ __  _ __        |"
+    echo "  |    \ \ / / _ \ | '_ \ / _ \ '__|  / / / _ \ '_ \| '_ \       |"
+    echo "  |     \ V /  __/ | |_) |  __/ |    / / |  __/ |_) | | | |       |"
+    echo "  |      \_/ \___|_|_.__/ \___|_|   /_/   \___| .__/|_| |_|       |"
+    echo "  |                                           |_|                  |"
+    echo "  |                                                               |"
+    echo "  |            Vibe TO Vexpanel - VPS Hosting Control Panel      |"
+    echo "  |                                                               |"
+    echo "  +---------------------------------------------------------------+"
     echo -e "${NC}"
 }
 
@@ -74,7 +62,7 @@ fi
 
 print_banner
 
-echo -e "${WHITE}${BOLD}VexPanel Installer v1.0${NC}"
+echo -e "${WHITE}${BOLD}Vibe TO Vexpanel Installer${NC}"
 echo -e "${CYAN}Installing the complete VPS hosting platform...${NC}"
 echo ""
 
@@ -106,20 +94,20 @@ fi
 # CLONE REPO (if running remotely)
 # ══════════════════════════════════════════════════════════════════════════
 if [ "$RUNNING_LOCAL" = false ]; then
-    header "DOWNLOADING VEXPANEL"
+    header "DOWNLOADING VIBE TO VEXPANEL"
 
     if [ -d "$INSTALL_DIR" ]; then
         warn "Directory $REPO_DIR already exists, pulling latest..."
         cd "$INSTALL_DIR"
         git pull origin main 2>/dev/null || true
     else
-        log "Cloning VexPanel repository..."
+        log "Cloning Vibe TO Vexpanel repository..."
         git clone "$REPO_URL" "$REPO_DIR"
         cd "$INSTALL_DIR"
     fi
-    log "VexPanel downloaded to: $INSTALL_DIR"
+    log "Vibe TO Vexpanel downloaded to: $INSTALL_DIR"
 else
-    header "USING LOCAL VEXPANEL"
+    header "USING LOCAL VIBE TO VEXPANEL"
     cd "$INSTALL_DIR"
     log "Using local installation at: $INSTALL_DIR"
 fi
@@ -165,7 +153,7 @@ header "BUILDING SERVICES"
 log "Pulling base images..."
 docker compose pull 2>/dev/null || true
 
-log "Building VexPanel containers (this may take a few minutes)..."
+log "Building Vibe TO Vexpanel containers (this may take a few minutes)..."
 docker compose build --no-cache
 
 log "Starting services..."
@@ -240,7 +228,7 @@ echo "  ║                                                               ║"
 echo "  ╚═══════════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 
-echo -e "  ${WHITE}${BOLD}Access VexPanel:${NC}"
+echo -e "  ${WHITE}${BOLD}Access Vibe TO Vexpanel:${NC}"
 echo -e "  ${CYAN}http://localhost:${PORT:-3000}${NC}"
 echo ""
 echo -e "  ${WHITE}${BOLD}First-time setup:${NC}"
@@ -253,6 +241,6 @@ echo -e "  ${GREEN}Restart:      ${CYAN}docker compose restart${NC}"
 echo -e "  ${GREEN}Update:       ${CYAN}bash deploy/update.sh${NC}"
 echo -e "  ${GREEN}Backup:       ${CYAN}bash deploy/backup.sh${NC}"
 echo ""
-echo -e "  ${MAGENTA}${BOLD}Made with ❤️  by SubhanPlays${NC}"
+echo -e "  ${MAGENTA}${BOLD}Made by SubhanPlays${NC}"
 echo -e "  ${WHITE}https://github.com/Subhanplays${NC}"
 echo ""
